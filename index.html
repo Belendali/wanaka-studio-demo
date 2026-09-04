@@ -310,6 +310,28 @@
   .empty-state .eb { width: 260px; text-align: center; font: 400 13px/20px var(--font); color: rgba(255,255,255,.45); }
   .empty-state .gen.es { width: 200px; margin-top: 8px; }
   .refcap { width: 100%; text-align: center; font: 400 12px/16px var(--font); color: var(--w32); margin-top: 8px; }
+
+  /* ============================ scene objects (edit state) ============================ */
+  .scene { position: absolute; inset: 0; }
+  .obj { position: absolute; transform: translate(-50%, -100%); cursor: grab; user-select: none; touch-action: none; }
+  .obj:active { cursor: grabbing; }
+  .obj img { display: block; height: var(--h); width: auto; max-width: none; pointer-events: none; filter: drop-shadow(0 10px 8px rgba(0,0,0,.18)); }
+  .obj .shadow { position: absolute; left: 50%; bottom: -16px; width: 78%; height: 30px; transform: translateX(-50%); pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,.32) 0%, rgba(0,0,0,.12) 45%, rgba(0,0,0,0) 72%); }
+  .obj .box { position: absolute; inset: -12px; border: 1.5px solid var(--brand); border-radius: 4px; pointer-events: none; box-shadow: 0 0 0 1px rgba(0,0,0,.25), inset 0 0 0 1px rgba(0,0,0,.25); }
+  .obj .box i { position: absolute; width: 9px; height: 9px; background: #fff; border: 1.5px solid var(--brand); border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .obj .box i.tl { left: -5px; top: -5px; } .obj .box i.tr { right: -5px; top: -5px; } .obj .box i.bl { left: -5px; bottom: -5px; } .obj .box i.br { right: -5px; bottom: -5px; }
+  .obj .box i.tm { left: 50%; top: -5px; margin-left: -4.5px; } .obj .box i.bm { left: 50%; bottom: -5px; margin-left: -4.5px; }
+  .obj .box i.ml { left: -5px; top: 50%; margin-top: -4.5px; } .obj .box i.mr { right: -5px; top: 50%; margin-top: -4.5px; }
+  .obj .tag { position: absolute; left: 50%; top: -44px; transform: translateX(-50%); padding: 4px 8px; border-radius: 6px; background: rgba(20,14,16,.88); color: #fff;
+    font: 500 12px/16px var(--font); white-space: nowrap; pointer-events: none; display: flex; align-items: center; gap: 6px; }
+  .obj .tag b { width: 6px; height: 6px; border-radius: 3px; background: var(--brand); }
+  .obj .gizmo { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; overflow: visible; }
+  .obj .gizmo svg { position: absolute; left: -90px; top: -90px; overflow: visible; }
+  .obj.placed { animation: drop .35s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes drop { from { opacity: 0; transform: translate(-50%, -100%) translateY(-24px) scale(.96); } to { opacity: 1; transform: translate(-50%, -100%); } }
+  .viewport .hint { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); padding: 6px 12px; border-radius: 8px; background: rgba(20,14,16,.75); color: rgba(255,255,255,.85); font: 400 12px/16px var(--font); white-space: nowrap; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { .obj.placed { animation: none; } }
 </style>
 
 
@@ -339,6 +361,7 @@ const freshState = () => ({
   cat: '2D & UI', tab: 'gen', busy: false,
   forms: { '2D & UI': freshForm('2D & UI'), '3D Model': freshForm('3D Model'), 'Character': Object.assign(freshForm('Character'), { text: 'I want to create a cat student', refs: [U('cat.png')], pose: true, poseType: 'T-Pose' }) },
   assets: { '2D & UI': [], '3D Model': [], 'Character': [] },
+  scene: [], selected: null,
 });
 let S = freshState();
 
@@ -397,7 +420,7 @@ const rail = () => `
   <div class="rail-avatar">${I('avatar.png',28,28)}</div>
 </div>`;
 
-const viewport = () => `<div class="viewport">${I('viewport.png',1092,1036)}</div><div class="toast" id="toast"></div>`;
+const viewport = () => `<div class="viewport" id="viewport">${I('viewport.png',1092,1036)}<div class="scene" id="scene"></div></div><div class="toast" id="toast"></div>`;
 
 const chat = () => `
 <div class="chat-head">
@@ -533,7 +556,7 @@ const panel = () => {
 
 /* ---------------- render ---------------- */
 const stage = document.getElementById('stage');
-function renderShell() { stage.innerHTML = topbar() + rail() + panel() + viewport() + chat(); }
+function renderShell() { stage.innerHTML = topbar() + rail() + panel() + viewport() + chat(); renderScene(); }
 function renderPanel() {
   const old = document.getElementById('panel');
   const scroll = old && old.querySelector('.assets-body') ? old.querySelector('.assets-body').scrollTop : 0;
@@ -597,11 +620,69 @@ function generate() {
       });
     }
     if (!allDone) requestAnimationFrame(tick);
-    else { S.busy = false; toast(`${name} is ready in My Assets`); if (S.tab === 'gen') renderPanel(); if (new URLSearchParams(location.search).get('detail')) openDetail(items[0].id); }
+    else { S.busy = false; toast(`${name} is ready in My Assets`); if (S.tab === 'gen') renderPanel(); const qq = new URLSearchParams(location.search); if (qq.get('detail')) openDetail(items[0].id); if (qq.get('add')) { addToScene(items[0]); } }
   };
   requestAnimationFrame(tick);
 }
 
+
+
+/* ---------------- scene objects: add to scene + edit state ---------------- */
+let K = 1; // current stage scale, kept in sync by fit()
+const gizmo = () => `<div class="gizmo"><svg width="180" height="180" viewBox="0 0 180 180" aria-hidden="true">
+  <defs>
+    <marker id="ax" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#ff5a6e"/></marker>
+    <marker id="ay" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c0f000"/></marker>
+    <marker id="az" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#4f8dff"/></marker>
+  </defs>
+  <line x1="90" y1="90" x2="160" y2="90" stroke="#ff5a6e" stroke-width="3" marker-end="url(#ax)"/>
+  <line x1="90" y1="90" x2="90" y2="20" stroke="#c0f000" stroke-width="3" marker-end="url(#ay)"/>
+  <line x1="90" y1="90" x2="42" y2="138" stroke="#4f8dff" stroke-width="3" marker-end="url(#az)"/>
+  <rect x="90" y="62" width="22" height="22" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.6)" stroke-width="1"/>
+  <circle cx="90" cy="90" r="6" fill="#fff" stroke="#140e10" stroke-width="2"/>
+</svg></div>`;
+function renderScene() {
+  const layer = document.getElementById('scene'); if (!layer) return;
+  layer.innerHTML = S.scene.map(o => `<div class="obj${o.id === S.selected ? ' sel' : ''}${o.fresh ? ' placed' : ''}" data-oid="${o.id}" style="left:${o.x}px;top:${o.y}px;--h:${o.h}px">
+      <div class="shadow"></div><img src="${U(o.img)}" draggable="false" alt="">
+      ${o.id === S.selected ? `<div class="box"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="ml"></i><i class="mr"></i></div><div class="tag"><b></b>${esc(o.name)}</div>${gizmo()}` : ''}
+    </div>`).join('') + (S.selected ? `<div class="hint">Drag to move · Esc to deselect · Delete to remove</div>` : '');
+  S.scene.forEach(o => { o.fresh = false; });
+  const tools = document.querySelectorAll('.tb-center .tool');
+  if (tools[2]) tools[2].classList.toggle('on', !!S.selected);
+}
+function addToScene(item) {
+  const a = itemArt(item);
+  const h = S.cat === 'Character' ? 340 : S.cat === '3D Model' ? 300 : 250;
+  const n = S.scene.length;
+  const o = { id: uid++, name: item.name, img: a.large, h, x: 546 + ((n % 3) - 1) * 120 + Math.floor(n / 3) * 24, y: 720 + (n % 3) * 12, fresh: true };
+  S.scene.push(o); S.selected = o.id; renderScene();
+}
+let drag = null;
+stage.addEventListener('pointerdown', (e) => {
+  const obj = e.target.closest('.obj');
+  if (obj) {
+    const id = +obj.dataset.oid; const o = S.scene.find(s => s.id === id);
+    if (S.selected !== id) { S.selected = id; renderScene(); }
+    drag = { id, sx: e.clientX, sy: e.clientY, ox: o.x, oy: o.y, moved: false };
+    e.preventDefault(); return;
+  }
+  if (e.target.closest('#viewport') && S.selected && !e.target.closest('.modal')) { S.selected = null; renderScene(); }
+});
+window.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const o = S.scene.find(s => s.id === drag.id); if (!o) return;
+  const nx = drag.ox + (e.clientX - drag.sx) / K, ny = drag.oy + (e.clientY - drag.sy) / K;
+  o.x = Math.max(40, Math.min(1052, nx)); o.y = Math.max(o.h + 20, Math.min(1030, ny)); drag.moved = true;
+  const el = document.querySelector(`.obj[data-oid="${o.id}"]`); if (el) { el.style.left = o.x + 'px'; el.style.top = o.y + 'px'; }
+});
+window.addEventListener('pointerup', () => { drag = null; });
+document.addEventListener('keydown', (e) => {
+  if (D || /^(INPUT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName)) return;
+  if (!S.selected) return;
+  if (e.key === 'Escape') { S.selected = null; renderScene(); }
+  if (e.key === 'Delete' || e.key === 'Backspace') { const o = S.scene.find(s => s.id === S.selected); S.scene = S.scene.filter(s => s.id !== S.selected); S.selected = null; renderScene(); if (o) toast(`${o.name} removed from Scene 1`); }
+});
 
 /* ---------------- detail modal ---------------- */
 let D = null; // { secId, idx }
@@ -682,7 +763,7 @@ stage.addEventListener('click', (e) => {
       S.cat = v; S.tab = 'gen'; const nf = S.forms[v]; nf.text = `I want to create a ${sec.name.toLowerCase()}`; if (nf.refs.length < 5) nf.refs.push(U(refImg));
       renderModal(); renderPanel(); toast(`${item.name} sent to ${v === 'Character' ? 'Create 3D Character' : 'Create 3D Model'}`); break; }
     case 'fav': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); if (it) { it.fav = !it.fav; el.classList.toggle('on', it.fav); toast(it.fav ? 'Added to favorites' : 'Removed from favorites'); } break; }
-    case 'addscene': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); toast(`${it ? it.name : 'Asset'} added to Scene 1`); if (D) closeDetail(); break; }
+    case 'addscene': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); if (D) closeDetail(); if (it) { addToScene(it); toast(`${it.name} added to Scene 1`); } break; }
   }
 });
 stage.addEventListener('input', (e) => {
@@ -708,7 +789,7 @@ function fit() {
   const availW = document.documentElement.clientWidth - 32;
   const availH = window.innerHeight - pickerH - 32;
   const k = Math.max(0.2, Math.min(1, availW / 1920, availH / 1080));
-  stage.style.transform = `scale(${k})`;
+  K = k; stage.style.transform = `scale(${k})`;
   box.style.width = (1920 * k) + 'px';
   box.style.height = (1080 * k) + 'px';
   document.getElementById('zoom').textContent = '1920 × 1080 · ' + Math.round(k * 100) + '%';

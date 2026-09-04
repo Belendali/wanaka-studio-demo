@@ -16,6 +16,7 @@ No build step, no dependencies. Fonts (Poppins, Bitcount Grid Single) load from 
 - Prompt input with live counter, reference images (up to 5, wraps at 5/5), ratio / variants / toggles / pose
 - Generate → generating cards with progress → results revealed in My Assets (grouped by batch)
 - Asset detail modal: 2D (Create 3D model / Create Character), 3D (grid backdrop, Add Animation, Create Character), Character (turnaround animation, Add Animation)
+- Add to scene: the asset lands in the viewport in an edit state (selection box, move gizmo, name tag); drag to move, Esc to deselect, Delete to remove
 - Empty states, hover actions (favorite / add to scene), toasts
 - Character flow uses the cat resources (`assets/cat.png`, `assets/cat-turn.webp`)
 
@@ -25,6 +26,7 @@ No build step, no dependencies. Fonts (Poppins, Bitcount Grid Single) load from 
 - `?tab=assets` — open My Assets
 - `?demo=I%20want%20a%20cute%20dog` — prefill the prompt and generate
 - `?detail=1` — open the first result's detail after generation
+- `?add=1` — place the first result into the scene after generation
 
 ## Layout
 
