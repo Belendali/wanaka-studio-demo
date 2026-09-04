@@ -1,0 +1,721 @@
+<meta charset="utf-8">
+<title>Wanaka Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Bitcount+Grid+Single&display=swap">
+<style>
+  /* ============ Figma tokens (Wanaka Studio, 0902/0903) ============ */
+  :root {
+    --bg: #140e10;          /* app ground */
+    --panel: #272123;       /* raised tiles */
+    --brand: #c0f000;       /* 主色 */
+    --ink: #222;            /* 主色2 */
+    --white: #fff;          /* 主色3 */
+    --w08: rgba(255,255,255,.08);
+    --w06: rgba(255,255,255,.06);
+    --w05: rgba(255,255,255,.05);
+    --w02: rgba(255,255,255,.02);
+    --w14: rgba(255,255,255,.14);
+    --w20: rgba(255,255,255,.2);
+    --w32: rgba(255,255,255,.32);
+    --w60: rgba(255,255,255,.6);
+    --w65: rgba(255,255,255,.65);
+    --w80: rgba(255,255,255,.8);
+    --font: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'Bitcount Grid Single', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #2b2b2b; color: var(--white); font-family: var(--font); }
+  p { margin: 0; }
+  img { display: block; }
+
+  /* ---------- screen picker (outside the 1920x1080 frame) ---------- */
+  .picker {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    padding: 10px 16px; background: #1c1c1c; border-bottom: 1px solid #333;
+    font-size: 12px; color: #aaa; position: sticky; top: 0; z-index: 10;
+  }
+  .picker .lbl { margin-right: 6px; letter-spacing: .04em; text-transform: uppercase; font-size: 11px; color: #777; }
+  .picker button {
+    font: 500 12px/1 var(--font); color: #ccc; background: #2a2a2a; border: 1px solid #3a3a3a;
+    border-radius: 6px; padding: 7px 10px; cursor: pointer;
+  }
+  .picker button:hover { background: #333; }
+  .picker button[aria-pressed="true"] { background: var(--brand); color: #1a1a1a; border-color: var(--brand); }
+  .picker button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .picker .zoom { margin-left: auto; font-variant-numeric: tabular-nums; color: #777; }
+
+  .stage-wrap { padding: 16px; overflow: hidden; }
+  .stage-box { position: relative; margin: 0 auto; }
+  .stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+    background: var(--bg); overflow: hidden; transform-origin: 0 0;
+    box-shadow: 0 8px 40px rgba(0,0,0,.5);
+  }
+
+  /* ============================ TOP BAR ============================ */
+  .topbar { position: absolute; left: 0; top: 0; width: 1920px; height: 44px; background: var(--bg);
+    box-shadow: inset 0 -1px 0 0 var(--w08); }
+  .tb-left { position: absolute; left: 12px; top: 9px; height: 26px; display: flex; align-items: center; gap: 12px; }
+  .tb-center { position: absolute; left: 781.5px; top: 9px; height: 26px; display: flex; align-items: center; gap: 24px; }
+  .tb-right { position: absolute; left: 1429px; top: 9px; height: 26px; width: 479px; display: flex; align-items: center; gap: 94px; }
+  .iconbtn { display: flex; align-items: center; justify-content: center; }
+  .home { width: 32px; height: 26px; border-radius: 8px; background: var(--w08); }
+  .vdiv { width: 1px; height: 16px; background: var(--w08); }
+  .scenes { display: flex; align-items: center; gap: 8px; }
+  .scene { height: 26px; padding: 6px 8px; border-radius: 8px; display: flex; align-items: center; gap: 4px;
+    font: 400 14px/14px var(--font); color: var(--w60); white-space: nowrap; }
+  .scene.on { background: var(--w08); color: var(--white); }
+  .tools { display: flex; align-items: center; gap: 4px; }
+  .tgroup { display: flex; align-items: center; }
+  .tool { width: 26px; height: 26px; border-radius: 8.667px; display: flex; align-items: center; justify-content: center; opacity: .6; }
+  .tool.on { background: var(--w08); opacity: 1; }
+  .preview { height: 26px; padding: 6px 8px; border-radius: 8px; background: var(--w08); display: flex; align-items: center; gap: 8px;
+    font: 500 14px/16px var(--font); color: var(--white); }
+  .publish { position: relative; height: 26px; padding: 6px 8px; border-radius: 8px; display: flex; align-items: center; gap: 8px;
+    font: 500 14px/16px var(--font); color: var(--ink);
+    background: linear-gradient(90deg, #c0f000 0%, #14f000 46.635%, #00f08c 98.077%);
+    box-shadow: inset 0 -4px 4px 0 rgba(255,255,255,.12), inset 0 4px 4px 0 rgba(255,255,255,.12); }
+  .acct { display: flex; align-items: center; gap: 16px; }
+  .upgrade-wrap { height: 26px; padding-right: 8px; border-radius: 8px; background: var(--w08); display: flex; align-items: center; gap: 8px; }
+  .upgrade { height: 26px; padding: 6px 8px; border-radius: 8px; background: #fff; display: flex; align-items: center; gap: 8px;
+    font: 500 14px/14px var(--font); color: var(--ink);
+    box-shadow: inset 0 -4px 4px 0 rgba(255,255,255,.12), inset 0 4px 4px 0 rgba(255,255,255,.12); }
+  .coins { display: flex; align-items: center; gap: 4px; font: 400 14px/14px var(--font); color: var(--white); }
+  .coins img { width: 14px; height: 14.4px; }
+  .hist { width: 116px; height: 26px; padding: 5px 8px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .hist .dim { opacity: .6; } .hist .dim img { transform: scaleX(-1); }
+
+  /* ============================ LEFT RAIL ============================ */
+  .rail { position: absolute; left: 0; top: 44px; width: 48px; height: 1036px; background: var(--bg);
+    padding: 12px 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    box-shadow: inset -1px 0 0 0 var(--w08); }
+  .rail-items { display: flex; flex-direction: column; gap: 12px; }
+  .rail-item { width: 28px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .rail-item .ic { width: 28px; height: 28px; padding: 6px; border-radius: 7px; }
+  .rail-item.on .ic { background: rgba(192,240,0,.08); }
+  .rail-item span { font: 300 8px/10px var(--font); color: var(--white); text-align: center; white-space: nowrap; }
+  .rail-avatar { width: 28px; height: 28px; border-radius: 8px; overflow: hidden; }
+  .rail-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ============================ LEFT PANEL ============================ */
+  .panel { position: absolute; left: 48px; top: 44px; width: 380px; height: 1036px; padding-top: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .panel-title { width: 100%; padding: 0 12px 16px; display: flex; align-items: center; justify-content: space-between;
+    font: 500 14px/16px var(--font); box-shadow: inset 0 -0.8px 0 0 var(--w08); }
+  .cats { width: 380px; height: 220px; padding: 0 12px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; }
+  .cat { background: var(--panel); border-radius: 10px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; opacity: .6; border: 1px solid transparent; }
+  .cat.on { opacity: 1; border-color: #fff; }
+  .cat .ic { width: 24px; height: 24px; position: relative; }
+  .cat .ic img { width: 24px; height: 24px; }
+  .cat .ic.char img { position: absolute; width: 15px; height: 19.09px; left: calc(50% + .3px); top: 2.4px; transform: translateX(-50%); }
+  .cat span { font: 400 12px/12px var(--font); color: var(--white); text-align: center; }
+  .divider { width: 100%; height: 16px; }
+  .content { width: 100%; height: 728px; padding: 0 16px; display: flex; flex-direction: column; }
+  .content-inner { flex: 1 0 0; min-height: 1px; padding-bottom: 16px; display: flex; flex-direction: column; justify-content: space-between; }
+  .sect-title { width: 100%; padding-bottom: 12px; font: 500 16px/16px var(--font); color: var(--white); white-space: nowrap; }
+  .tabs { width: 100%; padding: 4px; gap: 4px; border-radius: 12px; background: var(--w06); display: flex; }
+  .tab { flex: 1 0 0; height: 32px; padding: 0 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; border: 1px solid transparent;
+    font: 500 14px/18px var(--font); color: rgba(255,255,255,.5); white-space: nowrap; }
+  .tab.on { background: var(--w14); border-color: var(--w20); color: var(--white); }
+  .form { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+  .prompt { width: 100%; height: 132px; border-radius: 14px; background: var(--w05); border: 1px solid var(--w08);
+    padding: 16px 12px 12px 18px; display: flex; flex-direction: column; justify-content: space-between;
+    font: 400 14px/20px var(--font); color: var(--w32); overflow: hidden; }
+  .prompt.filled .txt { color: var(--white); }
+  .prompt .count { text-align: right; }
+  .prompt .count b { font-weight: 400; color: var(--w60); }
+  .prompt:not(.filled) .count b { color: var(--w32); }
+  .refbox { width: 100%; height: 124px; border-radius: 14px; border: 1px dashed var(--w08); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px 12px 12px 18px; background: var(--w05); overflow: hidden; }
+  .refbox .add { width: 32px; height: 32px; opacity: .5; }
+  .refbox .lab { font: 400 14px/20px var(--font); color: var(--w32); text-align: center; }
+  .refbox .cnt { font: 400 12px/20px var(--font); color: var(--w20); text-align: center; margin-top: -2px; }
+  .refbox.filled { background: transparent; gap: 0; padding: 14px 9px 10px 15px; justify-content: flex-start; align-items: flex-start; }
+  .refrow { display: flex; align-items: center; gap: 6px; }
+  .refthumb { width: 104px; height: 100px; border-radius: 10px; background: var(--panel); padding: 6px 14px; display: flex; align-items: center; justify-content: center; }
+  .refthumb img { width: 92px; height: 85px; object-fit: contain; object-position: bottom; }
+  .refthumb.add { background: var(--w02); border: 1px dashed var(--w08); flex-direction: column; gap: 10px; }
+  .refthumb.add img { width: 32px; height: 32px; opacity: .5; }
+  .refthumb.add span { font: 400 12px/20px var(--font); color: var(--w20); }
+  .row { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .row .lab { font: 400 14px/16px var(--font); color: var(--w60); white-space: nowrap; }
+  .ratio { width: 100%; display: flex; align-items: center; gap: 16px; }
+  .ratio .lab { font: 400 14px/20px var(--font); color: var(--w60); }
+  .select { flex: 1 0 0; padding: 4px; gap: 8px; border-radius: 8px; background: var(--w05); display: flex; align-items: center; }
+  .select .opt { flex: 1 0 0; text-align: center; font: 400 14px/15px var(--font); color: var(--w65); }
+  .select .opt.on { background: #fff; border-radius: 6px; padding: 8px 0; min-width: 0; font: 500 14px/14px var(--font); color: #1a1517; }
+  .seg { padding: 4px; gap: 3px; border-radius: 8px; background: var(--w06); display: flex; }
+  .seg .opt { padding: 5px 13px; border-radius: 6px; font: 500 14px/14px var(--font); color: var(--w65); white-space: nowrap; }
+  .seg .opt.on { background: #fff; color: #1a1517; }
+  .seg.wide { width: 100%; }
+  .seg.wide .opt { flex: 1 0 0; text-align: center; color: rgba(255,255,255,.3); }
+  .seg.wide .opt.on { color: #1a1517; }
+  .toggle { width: 34px; height: 20px; }
+  .pose-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .gen { width: 100%; padding: 8px 16px; border-radius: 12px; background: #fff; border: .8px solid #e6e6e6; box-shadow: 0 2.4px 0 #e6e6e6;
+    display: flex; justify-content: center; font: 600 14px/24px var(--font); color: var(--ink); }
+  .gen.off { opacity: .5; }
+  .gen.off span { opacity: .5; }
+
+  /* assets tab */
+  .content.assets { gap: 4px; }
+  .content.assets .sect-title { padding-bottom: 12px; }
+  .assets-body { flex: 1 0 0; min-height: 1px; padding-bottom: 16px; display: flex; flex-direction: column; gap: 16px; width: 100%; }
+  .section { width: 100%; padding: 16px; border-radius: 16px; background: var(--w02); display: flex; flex-direction: column; gap: 8px; }
+  .sec-head { display: flex; gap: 8px; align-items: flex-start; }
+  .sec-head .d { font: 500 14px/1.2 var(--font); color: rgba(255,255,255,.85); }
+  .sec-head .t { font: 400 13px/17px var(--font); color: rgba(255,255,255,.85); }
+  .badge { padding: 2px 4px; border-radius: 6px; font: 500 12px/12px var(--font); text-align: center; }
+  .badge.d2 { background: #f5ec00; color: #3d3500; }
+  .badge.d3 { background: var(--brand); color: #313d00; }
+  .cards { display: flex; gap: 8px; width: 100%; }
+  .cards.pad { padding: 0 12px; }
+  .card { flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .thumb { position: relative; width: 100%; height: 100px; border-radius: 10px; background: var(--panel); display: flex; align-items: center; justify-content: center; padding: 6px; }
+  .thumb .dog { width: 92px; height: 85px; object-fit: contain; object-position: bottom; }
+  .thumb .spin { width: 40px; height: 40px; }
+  .thumb .badge { position: absolute; left: 6px; top: 6px; }
+  .thumb .hover { position: absolute; left: 8px; top: 69px; width: 138px; display: flex; align-items: center; justify-content: space-between; }
+  .card .name { width: 100%; text-align: center; font: 400 12px/16px var(--font); color: var(--white); }
+  .card .name.dim { color: var(--w65); }
+  .card .name.lg { font-size: 14px; }
+
+  /* ============================ VIEWPORT ============================ */
+  .viewport { position: absolute; left: 428px; top: 44px; width: 1092px; height: 1036px; border-radius: 8px; overflow: hidden; background: #d9d9d9; }
+  .viewport img { width: 100%; height: 100%; }
+
+  /* ============================ RIGHT: CHAT ============================ */
+  .chat-head { position: absolute; left: 1520px; top: 44px; width: 400px; height: 52.535px; padding: 12px; background: var(--bg);
+    display: flex; align-items: center; gap: 10px; box-shadow: inset 1px 0 0 0 var(--w08), inset 0 -1px 0 0 var(--w08); }
+  .chat-name { flex: 1 0 0; min-width: 1px; height: 28px; padding: 6px 12px; border-radius: 8px; background: var(--w08); backdrop-filter: blur(20px);
+    display: flex; align-items: center; gap: 8px; font: 400 14px/16px var(--font); color: var(--white); }
+  .chat-name span { flex: 1 0 0; }
+  .chat-plus { height: 28px; padding: 9px 8px; border-radius: 10px; background: var(--w08); display: flex; align-items: center; }
+  .chat-body { position: absolute; left: 1520px; top: 96.54px; width: 400px; height: 983.46px; padding: 12px;
+    display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 1px 0 0 0 var(--w08), inset 0 -1px 0 0 var(--w08); }
+  .msgs { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; width: 100%; }
+  .user-msg { width: 303px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .bubble { width: 303px; padding: 8px 12px; border-radius: 8px; background: #fff; backdrop-filter: blur(20px);
+    font: 500 14px/21px var(--font); color: var(--ink); }
+  .msg-actions { display: flex; gap: 8px; }
+  .think { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .think .lbl { font: 400 14px/21px var(--font); color: #9c9c9c; width: 216px; }
+  .deep { position: relative; width: 100%; height: 146px; }
+  .deep .bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .deep .head { position: absolute; left: 2.78%; top: 0; width: 94.56%; height: 32px; }
+  .deep .head p { position: absolute; left: 0; top: 9px; font: 400 14px/14px var(--font); color: var(--white); }
+  .deep .head img { position: absolute; right: 0; top: 8.46px; width: 16px; height: 16px; transform: scaleY(-1); }
+  .deep .body { position: absolute; left: 2.78%; top: 38px; width: 94.44%; font: 400 14px/20px var(--font); color: var(--w60); }
+  .step { width: 100%; display: flex; align-items: center; gap: 8px; font: 400 14px/20px var(--font); color: var(--w80); }
+  .step img { width: 16px; height: 16px; flex: none; }
+  .step.todo { color: var(--white); }
+  .step.todo span { opacity: .4; }
+  .step span { flex: 1 0 0; min-width: 1px; }
+  .composer-area { position: relative; width: 100%; height: 172px; }
+  .model-strip { position: absolute; left: 0; top: 20px; width: 100%; padding-bottom: 34px; border-radius: 8px 8px 0 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.1) 5.714%, rgba(255,255,255,0) 98.571%); }
+  .model-row { height: 28px; padding: 0 12px; display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    font: 400 12px/21px var(--mono); color: var(--w80); white-space: nowrap; font-variation-settings: "CRSV" 0, "ELSH" 0, "ELXP" 0; }
+  .composer { position: absolute; left: 0; top: 48px; width: 100%; height: 124px; padding: 12px; border-radius: 8px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); backdrop-filter: blur(20px);
+    box-shadow: 0 0 24px 0 rgba(255,255,255,.12); display: flex; flex-direction: column; justify-content: space-between; }
+  .composer .ph { font: 400 14px/21px var(--font); color: rgba(255,255,255,.4); }
+  .composer .ctl { display: flex; align-items: flex-end; justify-content: space-between; }
+  .composer .lft { display: flex; align-items: center; gap: 12px; }
+  .cbtn { position: relative; width: 32px; height: 32px; }
+  .cbtn .base { position: absolute; inset: 0; width: 32px; height: 32px; }
+  .cbtn .plus { position: absolute; left: 25%; top: 25%; width: 50%; height: 50%; }
+  .cbtn .stop { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; border-radius: 7.5px; background: var(--ink); transform: translate(-50%,-50%); }
+  .mascot { position: absolute; left: 0; top: 0; width: 26.91%; height: 60px; overflow: hidden; }
+  .mascot img { width: 57px; height: 60.8px; object-fit: contain; }
+
+  /* ============================ component board (asset card) ============================ */
+  .board { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .comp-frame { width: 194px; height: 300px; padding: 20px; background: var(--bg); outline: 1px dashed #9747ff; outline-offset: 0; display: flex; flex-direction: column; gap: 20px; }
+  .comp-frame .card { width: 154px; flex: none; }
+  .comp-frame .thumb { width: 154px; }
+  .comp-cap { position: absolute; left: 50%; top: 50%; transform: translate(200px, -150px); font: 400 13px/1.6 var(--font); color: #9c9c9c; width: 260px; }
+  .comp-cap b { color: #fff; font-weight: 500; }
+  /* ============================ interactive demo additions ============================ */
+  .cat.pick, .tab, .select .opt, .seg .opt, .toggle, .gen:not(.off), .refbox, .refthumb.add, .thumb .hover img, .rail-item, .scene, .tool, .cbtn, .chat-plus { cursor: pointer; }
+  .cat.pick:hover { opacity: .85; }
+  .prompt textarea { flex: 1 0 0; width: 100%; resize: none; border: 0; outline: 0; background: transparent; padding: 0; margin: 0;
+    font: 400 14px/20px var(--font); color: var(--white); caret-color: var(--brand); }
+  .prompt textarea::placeholder { color: var(--w32); }
+  .prompt:focus-within { border-color: var(--w20); }
+  .refbox.filled { height: auto; min-height: 124px; }
+  .refrow { flex-wrap: wrap; }
+  .refthumb { position: relative; }
+  .refthumb .rm { position: absolute; right: 4px; top: 4px; width: 18px; height: 18px; border-radius: 9px; background: rgba(0,0,0,.6); color: #fff;
+    font: 500 12px/18px var(--font); text-align: center; display: none; }
+  .refthumb:hover .rm { display: block; }
+  .refthumb img.user { width: 92px; height: 85px; object-fit: contain; }
+  .thumb .hover { display: none; }
+  .card.done:hover .thumb .hover { display: flex; }
+  .card .thumb img.dog.reveal { animation: reveal .45s ease-out both; }
+  @keyframes reveal { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+  .thumb .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .thumb .prog { position: absolute; left: 6px; right: 6px; bottom: 6px; height: 3px; border-radius: 2px; background: var(--w08); overflow: hidden; }
+  .thumb .prog i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .4s linear; }
+  .gen.busy { pointer-events: none; }
+  .gen.busy span { opacity: .6; }
+  .assets-body { overflow-y: auto; }
+  .assets-body::-webkit-scrollbar { width: 0; }
+  .empty { width: 100%; padding: 48px 16px; text-align: center; font: 400 13px/20px var(--font); color: var(--w32); }
+  .toast { position: absolute; left: 974px; bottom: 32px; transform: translateX(-50%) translateY(8px); padding: 8px 14px; border-radius: 8px;
+    background: rgba(20,14,16,.92); color: #fff; font: 500 13px/18px var(--font); box-shadow: 0 4px 16px rgba(0,0,0,.4); opacity: 0; transition: .25s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
+  .composer textarea { width: 100%; resize: none; border: 0; outline: 0; background: transparent; padding: 0; font: 400 14px/21px var(--font); color: #fff; height: 42px; }
+  .composer textarea::placeholder { color: rgba(255,255,255,.4); }
+  .fav.on { filter: drop-shadow(0 0 0 #c0f000) brightness(1.4) sepia(1) hue-rotate(40deg) saturate(6); }
+  @media (prefers-reduced-motion: reduce) { .thumb .spin, .card .thumb img.dog.reveal { animation: none; } }
+
+  /* ============================ detail modal (2D detail) ============================ */
+  .overlay { position: absolute; left: -3px; top: -2px; width: 1923px; height: 1082px; background: rgba(0,0,0,.7); backdrop-filter: blur(5px); z-index: 20; }
+  .modal { position: absolute; left: 510px; top: 240px; width: 900px; height: 600px; padding: 24px; border-radius: 20px; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; z-index: 21; }
+  .modal .sec-head { width: 100%; }
+  .modal .mid { display: flex; align-items: center; justify-content: center; gap: 100px; }
+  .modal .nav { width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 20px; }
+  .modal .nav:hover { background: var(--w08); }
+  .modal .nav img { width: 40px; height: 40px; }
+  .modal .nav.prev img { transform: rotate(-90deg) scaleY(-1); }
+  .modal .nav.next img { transform: rotate(-90deg); }
+  .modal .nav.off { opacity: .25; pointer-events: none; }
+  .modal .pic { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .modal .pic img { width: 300px; height: 277px; object-fit: contain; object-position: bottom; }
+  .modal .pic p { font: 400 13px/17px var(--font); color: rgba(255,255,255,.85); white-space: nowrap; }
+  .modal .pic p.cnt { margin-top: 0; }
+  .modal .foot { width: 100%; display: flex; align-items: flex-start; justify-content: space-between; }
+  .modal .foot .grp { display: flex; gap: 8px; }
+  .btn { padding: 8px 16px; border-radius: 12px; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; white-space: nowrap; font: 600 14px/24px var(--font); }
+  .btn.grey { width: 190px; background: #3a3536; border: 1px solid #423f3f; box-shadow: 0 3px 0 #423f3f; color: #fff; }
+  .btn.grey:hover { background: #443e40; }
+  .btn.white { width: 335px; background: #fff; border: .8px solid #e6e6e6; box-shadow: 0 2.4px 0 #e6e6e6; color: var(--ink); }
+  .btn.white:hover { background: #f3f3f3; }
+  .btn:active { transform: translateY(2px); box-shadow: none; }
+  .card.done .thumb { cursor: pointer; }
+  .modal .pic img.slide { animation: reveal .3s ease-out both; }
+  .modal.m3d { overflow: clip; }
+  .modal > .sec-head, .modal > .mid, .modal > .foot { position: relative; }
+  .modal .grid { position: absolute; left: .5px; top: -3px; width: 899px; height: 606px; opacity: .15; overflow: hidden; pointer-events: none; }
+  .modal .grid img { position: absolute; left: -7.45%; top: -0.01%; width: 119.83%; height: 100.02%; max-width: none; }
+  .modal .close { position: absolute; left: 852px; top: 21px; width: 24px; height: 24px; cursor: pointer; border-radius: 12px; }
+  .modal .close:hover { background: var(--w08); }
+  .modal .pic img.tall { width: 300px; height: 336px; }
+  .empty-state { width: 100%; padding: 96px 24px 32px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .empty-state .ei { width: 48px; height: 48px; opacity: .35; margin-bottom: 8px; }
+  .empty-state .et { font: 500 14px/20px var(--font); color: rgba(255,255,255,.85); }
+  .empty-state .eb { width: 260px; text-align: center; font: 400 13px/20px var(--font); color: rgba(255,255,255,.45); }
+  .empty-state .gen.es { width: 200px; margin-top: 8px; }
+  .refcap { width: 100%; text-align: center; font: 400 12px/16px var(--font); color: var(--w32); margin-top: 8px; }
+</style>
+
+
+<div class="picker" id="picker"><span class="lbl">Wanaka Studio · Create demo</span>
+  <button type="button" id="preset2d">2D &amp; UI</button><button type="button" id="preset3d">3D Model</button><button type="button" id="presetch">Character</button>
+  <button type="button" id="reset" style="margin-left:8px">Reset demo</button>
+  <span class="zoom" id="zoom"></span></div>
+
+<div class="stage-wrap"><div class="stage-box" id="box"><div class="stage" id="stage"></div></div></div>
+
+<script>
+const A = 'assets/';
+const U = (n) => A + n;
+const I = (n, w, h, extra='') => `<img src="${A}${n}" width="${w}" height="${h}" style="width:${w}px;height:${h}px" alt="" ${extra}>`;
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------------- state ---------------- */
+const KINDS = { '2D & UI': '2D', '3D Model': '3D', 'Character': '3D' };
+const ART = { '2D & UI': { thumb: 'dog.png', large: 'dog-large.png' }, '3D Model': { thumb: 'dog.png', large: 'dog-large.png' }, 'Character': { thumb: 'cat.png', large: 'cat-turn.webp' } };
+const art = () => ART[S.cat];
+const freshForm = (cat) => cat === '2D & UI'
+  ? { text: '', refs: [], ratio: '1:1', variants: 4, nineSlice: false, transparent: false }
+  : { text: '', refs: [], split: false, texture: false, pose: false, poseType: 'A-Pose' };
+const freshState = () => ({
+  cat: '2D & UI', tab: 'gen', busy: false,
+  forms: { '2D & UI': freshForm('2D & UI'), '3D Model': freshForm('3D Model'), 'Character': Object.assign(freshForm('Character'), { text: 'I want to create a cat student', refs: [U('cat.png')], pose: true, poseType: 'T-Pose' }) },
+  assets: { '2D & UI': [], '3D Model': [], 'Character': [] },
+});
+let S = freshState();
+
+/* ---------------- shared shell ---------------- */
+const topbar = () => `
+<div class="topbar">
+  <div class="tb-left">
+    <div class="iconbtn home">${I('home.svg',16,16)}</div>
+    <div class="vdiv"></div>
+    <div class="scenes">
+      <div class="scene on">Scene 1 ${I('scene-menu.svg',14,14)}</div>
+      <div class="scene">Scene 2</div><div class="scene">Scene 2</div><div class="scene">Scene 2</div>
+    </div>
+  </div>
+  <div class="tb-center">
+    <div class="tools">
+      <div class="tgroup">
+        <div class="tool on">${I('cursor.svg',16,16)}</div>
+        <div class="tool">${I('hand.svg',16,16)}</div>
+      </div>
+      <div class="vdiv"></div>
+      <div class="tgroup">
+        <div class="tool">${I('move.svg',16,16)}</div>
+        <div class="tool">${I('refresh.svg',16,16)}</div>
+        <div class="tool on">${I('resize.svg',16,16)}</div>
+      </div>
+    </div>
+    <div class="preview">${I('play.svg',16,16)}Preview</div>
+  </div>
+  <div class="tb-right">
+    <div class="publish">${I('publish.svg',16,16)}Publish</div>
+    <div class="acct">
+      <div class="upgrade-wrap">
+        <div class="upgrade">${I('crown.svg',14,14)}Upgrade</div>
+        <div class="coins">${I('coin.png',14,14.4)}<span id="coins">320</span></div>
+      </div>
+      <div class="hist">
+        ${I('history.svg',16,16)}
+        ${I('arrow-left.svg',16,16)}
+        <span class="dim">${I('arrow-right.svg',16,16)}</span>
+        ${I('file.svg',16,16)}
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const rail = () => `
+<div class="rail">
+  <div class="rail-items">
+    <div class="rail-item"><div class="ic">${I('rail-scene.svg',16,16)}</div><span>Scene</span></div>
+    <div class="rail-item"><div class="ic">${I('rail-add.svg',16,16)}</div><span>Add</span></div>
+    <div class="rail-item on"><div class="ic">${I('rail-sparkle.svg',16,16)}</div><span>Create</span></div>
+    <div class="rail-item"><div class="ic">${I('rail-visual.svg',16,16)}</div><span>Visual</span></div>
+    <div class="rail-item"><div class="ic">${I('rail-settings.svg',16,16)}</div><span>Settings</span></div>
+  </div>
+  <div class="rail-avatar">${I('avatar.png',28,28)}</div>
+</div>`;
+
+const viewport = () => `<div class="viewport">${I('viewport.png',1092,1036)}</div><div class="toast" id="toast"></div>`;
+
+const chat = () => `
+<div class="chat-head">
+  <div class="chat-name"><span>Chat name Chat...</span>${I('chevron-down.svg',16,16)}</div>
+  <div class="chat-plus">${I('plus.svg',12,12)}</div>
+</div>
+<div class="chat-body">
+  <div class="msgs">
+    <div class="user-msg">
+      <div class="bubble">I want to create a Jump Jump game </div>
+      <div class="msg-actions">${I('msg-copy.svg',16,16)}${I('msg-edit.svg',16,16)}</div>
+    </div>
+    <div class="think">
+      <p class="lbl">Thinking...</p>
+      <div class="deep">
+        ${I('think-box.svg',376,146,'class="bg"')}
+        <div class="head"><p>Deep Thinking...</p>${I('chevron-up.svg',16,16)}</div>
+        <div class="body"><p>Welcome to Wanaka Studio! It's great to have you here.</p><p>To get started on your game development journey, could you tell me a bit more about what you'd like to build?</p></div>
+      </div>
+      <div class="step">${I('check.svg',16,16)}<span>Search assets for player and platforms</span></div>
+      <div class="step todo">${I('step-refresh.svg',16,16)}<span>Declare objects, behaviors, scene config,instances</span></div>
+      <div class="step todo">${I('step-dot.svg',16,16)}<span>Write game logic (charging,jumping,platform spawning, scoring)</span></div>
+      <div class="step todo">${I('step-dot.svg',16,16)}<span>Test and verify</span></div>
+    </div>
+  </div>
+  <div class="composer-area">
+    <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg',6,6)}</div></div>
+    <div class="composer">
+      <textarea placeholder="Ask, plan, build anything..." aria-label="Chat"></textarea>
+      <div class="ctl">
+        <div class="lft">
+          <div class="cbtn">${I('btn-circle.svg',32,32,'class="base"')}${I('plus-line.svg',16,16,'class="plus"')}</div>
+          <div class="cbtn">${I('add-file-2.svg',32,32,'class="base"')}</div>
+        </div>
+        <div class="cbtn">${I('send-circle.svg',32,32,'class="base"')}<div class="stop"></div></div>
+      </div>
+    </div>
+    <div class="mascot">${I('mascot.png',57,60.8)}</div>
+  </div>
+</div>`;
+
+/* ---------------- left panel ---------------- */
+const CATS = [
+  ['Character','cat-character.svg','char'], ['2D & UI','cat-image.svg'], ['3D Model','cat-asset.svg'],
+  ['Audio','cat-audio.svg'], ['Animation','cat-animation.svg'], ['World','cat-world.svg'],
+  ['VFX','cat-vfx.svg'], ['Material','cat-material.svg'], ['Prefab','cat-prefab.svg'],
+];
+const cats = () => `<div class="cats">${CATS.map(([n,f,k]) =>
+  `<div class="cat${n===S.cat?' on':''}${KINDS[n]?' pick':''}" data-act="cat" data-v="${esc(n)}"><div class="ic${k?' '+k:''}">${k ? `<img src="${U(f)}" alt="">` : I(f,24,24)}</div><span>${esc(n)}</span></div>`).join('')}</div>`;
+
+const panelHead = () => `<div class="panel-title"><span>Create</span>${I('sidebar-toggle.svg',16,16)}</div>`;
+const tabs = () => `<div class="tabs"><div class="tab${S.tab==='gen'?' on':''}" data-act="tab" data-v="gen">Generate</div><div class="tab${S.tab==='assets'?' on':''}" data-act="tab" data-v="assets">My Assets</div></div>`;
+const titleOf = (cat) => cat === '2D & UI' ? 'Create 2D &amp; UI' : cat === '3D Model' ? 'Create 3D Model' : 'Create 3D Character';
+const promptBox = (f, ph) => `<div class="prompt${f.text?' filled':''}">
+  <textarea id="prompt" maxlength="800" placeholder="${ph}" aria-label="${ph}">${esc(f.text)}</textarea>
+  <p class="count"><b id="count">${f.text.length || 0}</b>/800</p></div>`;
+const refbox = (f) => f.refs.length
+  ? `<div class="refbox filled" data-act="addref"><div class="refrow">
+      ${f.refs.map((src, i) => `<div class="refthumb" data-stop="1"><img class="user" src="${src}" alt=""><span class="rm" data-act="rmref" data-v="${i}">×</span></div>`).join('')}
+      ${f.refs.length < 5 ? `<div class="refthumb add">${I('add-image.png',32,32)}<span>(${f.refs.length}/5)</span></div>` : ''}</div>${f.refs.length >= 5 ? `<p class="refcap">5/5 reference images · remove one to add another</p>` : ''}</div>`
+  : `<div class="refbox" data-act="addref">${I('add-image.png',32,32,'class="add"')}<p class="lab">Add reference images</p><p class="cnt">(0/5)</p></div>`;
+const toggle = (label, key, on) => `<div class="row"><span class="lab">${label}</span>${I(on?'toggle-on.svg':'toggle-off.svg',34,20,`class="toggle" data-act="toggle" data-v="${key}"`)}</div>`;
+const ratio = (f) => `<div class="ratio"><span class="lab">Ratio</span><div class="select">
+  ${['1:1','16 : 9','9:16','4:3','3:4'].map(r => `<span class="opt${f.ratio===r?' on':''}" data-act="ratio" data-v="${r}">${r}</span>`).join('')}</div></div>`;
+const variants = (f) => `<div class="row"><span class="lab">Variants</span><div class="seg">
+  ${[1,2,3,4].map(n => `<span class="opt${f.variants===n?' on':''}" data-act="variants" data-v="${n}">${n}</span>`).join('')}</div></div>`;
+const pose = (f) => `<div class="pose-group">${toggle('Pose','pose',f.pose)}<div class="seg wide">
+  ${['A-Pose','T-Pose'].map(p => `<span class="opt${f.pose && f.poseType===p?' on':''}" data-act="posetype" data-v="${p}">${p}</span>`).join('')}</div></div>`;
+const genBtn = (f) => `<div class="gen${f.text.trim()?'':' off'}${S.busy?' busy':''}" data-act="generate"><span>${S.busy?'Generating…':'Generate'}</span></div>`;
+
+const form2d = (f) => `
+  <div class="content"><div class="content-inner">
+    <div style="display:flex;flex-direction:column;gap:16px;width:100%">
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%"><p class="sect-title">${titleOf(S.cat)}</p>${tabs()}</div>
+      <div class="form">
+        ${promptBox(f, 'Describe the image or UI you want to create')}
+        ${refbox(f)}
+        ${ratio(f)}${variants(f)}
+        ${toggle('Nine-slice','nineSlice',f.nineSlice)}${toggle('Transparent background','transparent',f.transparent)}
+      </div>
+    </div>
+    ${genBtn(f)}
+  </div></div>`;
+
+const form3d = (f) => `
+  <div class="content"><div class="content-inner">
+    <div style="display:flex;flex-direction:column;gap:16px;width:100%">
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%"><p class="sect-title">${titleOf(S.cat)}</p>${tabs()}</div>
+      <div class="form">
+        ${promptBox(f, 'Describe the 3D object you want to create')}
+        ${refbox(f)}
+        ${toggle('Split','split',f.split)}${toggle('Texture','texture',f.texture)}
+        ${pose(f)}
+      </div>
+    </div>
+    ${genBtn(f)}
+  </div></div>`;
+
+const badge = (kind) => `<span class="badge ${kind==='2D'?'d2':'d3'}">${kind}</span>`;
+const card = (item, kind, opts={}) => {
+  const done = item.status === 'done';
+  return `<div class="card${done?' done':''}" data-id="${item.id}">
+    <div class="thumb"${done?` data-act="open" data-v="${item.id}"`:''}>
+      ${done ? I(art().thumb,92,85,`class="dog${item.fresh?' reveal':''}"`) : I('loading.gif',40,40,'class="spin"') + `<div class="prog"><i style="width:${item.progress||0}%"></i></div>`}
+      ${opts.badge ? badge(kind) : ''}
+      ${done ? `<div class="hover">${I('favorite.svg',20,20,`class="fav${item.fav?' on':''}" data-act="fav" data-v="${item.id}" title="Favorite"`)}${I('add-circle-brand.svg',24,24,`data-act="addscene" data-v="${item.id}" title="Add to scene"`)}</div>` : ''}
+    </div>
+    <p class="name${done?'':' dim'}${opts.lg?' lg':''}">${done ? esc(item.name) : 'Generating...'}</p></div>`;
+};
+const rows = (items, n, render) => { const out=[]; for (let i=0;i<items.length;i+=n) out.push(`<div class="cards">${items.slice(i,i+n).map(render).join('')}</div>`); return out.join(''); };
+
+const assetsView = () => {
+  const list = S.assets[S.cat];
+  const kind = KINDS[S.cat];
+  let body;
+  if (!list.length) body = `<div class="empty-state">
+      <img src="${U(S.cat === '2D & UI' ? 'cat-image.svg' : 'cat-asset.svg')}" alt="" class="ei">
+      <p class="et">${S.cat === '2D & UI' ? 'No 2D assets yet' : S.cat === '3D Model' ? 'No 3D models yet' : 'No characters yet'}</p>
+      <p class="eb">${S.cat === '2D & UI' ? 'Describe an image or UI in Generate and your results will show up here.' : 'Describe a 3D object in Generate and your models will show up here.'}</p>
+      <div class="gen es" data-act="tab" data-v="gen"><span>Go to Generate</span></div></div>`;
+  else if (kind === '2D') body = list.map(sec => `<div class="section">
+      <div class="sec-head"><span class="d">${sec.date}</span><span class="t">${sec.time}</span><span class="t">${esc(sec.name)}</span>${badge('2D')}</div>
+      ${rows(sec.items, 2, it => card(it, '2D'))}</div>`).join('');
+  else body = `<div style="display:flex;flex-direction:column;gap:16px;width:100%">${list.map(sec => `<div class="cards pad">${sec.items.map(it => card(it, '3D', {badge:true, lg:true})).join('')}</div>`).join('')}</div>`;
+  return `<div class="content assets"><p class="sect-title">${titleOf(S.cat)}</p><div class="assets-body">${tabs()}${body}</div></div>`;
+};
+
+const panel = () => {
+  const f = S.forms[S.cat];
+  const body = S.tab === 'assets' ? assetsView() : (S.cat === '2D & UI' ? form2d(f) : form3d(f));
+  return `<div class="panel" id="panel">${panelHead()}${cats()}${I('divider.svg',380,16,'class="divider"')}${body}</div>`;
+};
+
+/* ---------------- render ---------------- */
+const stage = document.getElementById('stage');
+function renderShell() { stage.innerHTML = topbar() + rail() + panel() + viewport() + chat(); }
+function renderPanel() {
+  const old = document.getElementById('panel');
+  const scroll = old && old.querySelector('.assets-body') ? old.querySelector('.assets-body').scrollTop : 0;
+  const tmp = document.createElement('div'); tmp.innerHTML = panel();
+  old.replaceWith(tmp.firstElementChild);
+  const nb = document.querySelector('#panel .assets-body'); if (nb) nb.scrollTop = scroll;
+}
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* ---------------- generation logic ---------------- */
+let uid = 1;
+function nameFromPrompt(text) {
+  let s = text.trim().replace(/[.!。！]+$/, '');
+  s = s.replace(/^(please\s+)?(i\s+(want|need|would like)\s+(to\s+)?)?(create|generate|make|build|draw|design)\s+(a|an|the|some)?\s*/i, '');
+  s = s.replace(/^(a|an|the)\s+/i, '');
+  if (!s) s = text.trim();
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  return s.length > 22 ? s.slice(0, 22).trim() + '…' : s;
+}
+function pad(n) { return String(n).padStart(2, '0'); }
+function generate() {
+  const f = S.forms[S.cat];
+  if (!f.text.trim() || S.busy) return;
+  const now = new Date();
+  const kind = KINDS[S.cat];
+  const name = nameFromPrompt(f.text);
+  const n = kind === '2D' ? f.variants : 1;
+  const items = Array.from({ length: n }, (_, i) => ({ id: uid++, status: 'generating', progress: 0,
+    name: kind === '2D' ? `${name} ${pad(i + 1)}` : name }));
+  const section = { id: uid++, date: `${pad(now.getMonth() + 1)}-${pad(now.getDate())}`, time: `${pad(now.getHours())}:${pad(now.getMinutes())}`, name, kind, items };
+  S.assets[S.cat].unshift(section);
+  S.busy = true; S.tab = 'assets';
+  renderPanel();
+  const coins = document.getElementById('coins'); coins.textContent = Math.max(0, parseInt(coins.textContent, 10) - 10 * n);
+  toast(`Generating ${n} ${kind} asset${n > 1 ? 's' : ''}…`);
+  // simulated progress: each variant finishes ~0.9s after the previous one
+  const start = performance.now();
+  const durations = items.map((_, i) => 2200 + i * 900);
+  const tick = () => {
+    const t = performance.now() - start;
+    let dirty = false, allDone = true;
+    items.forEach((it, i) => {
+      if (it.status === 'done') return;
+      const p = Math.min(100, Math.round(t / durations[i] * 100));
+      if (p !== it.progress) { it.progress = p; dirty = true; }
+      if (p >= 100) { it.status = 'done'; it.fresh = true; dirty = true; }
+      else allDone = false;
+    });
+    if (dirty) {
+      // patch in place to keep the panel stable
+      items.forEach(it => {
+        const el = document.querySelector(`.card[data-id="${it.id}"]`);
+        if (!el) return;
+        if (it.status === 'done' && !el.classList.contains('done')) {
+          const tmp = document.createElement('div'); tmp.innerHTML = card(it, kind, kind === '3D' ? { badge: true, lg: true } : {});
+          el.replaceWith(tmp.firstElementChild); it.fresh = false;
+        } else { const bar = el.querySelector('.prog i'); if (bar) bar.style.width = it.progress + '%'; }
+      });
+    }
+    if (!allDone) requestAnimationFrame(tick);
+    else { S.busy = false; toast(`${name} is ready in My Assets`); if (S.tab === 'gen') renderPanel(); if (new URLSearchParams(location.search).get('detail')) openDetail(items[0].id); }
+  };
+  requestAnimationFrame(tick);
+}
+
+
+/* ---------------- detail modal ---------------- */
+let D = null; // { secId, idx }
+const findSec = (id) => S.assets[S.cat].find(s => s.id === id);
+function openDetail(itemId) {
+  for (const sec of S.assets[S.cat]) { const idx = sec.items.findIndex(i => i.id === itemId); if (idx >= 0) { D = { secId: sec.id, idx }; renderModal(); return; } }
+}
+function closeDetail() { D = null; renderModal(); }
+function renderModal() {
+  stage.querySelectorAll('.overlay, .modal').forEach(n => n.remove());
+  if (!D) return;
+  const sec = findSec(D.secId); if (!sec) { D = null; return; }
+  const done = sec.items.filter(i => i.status === 'done');
+  const item = sec.items[D.idx]; const k = done.indexOf(item);
+  const is3D = sec.kind === '3D';
+  const grp = S.cat === '2D & UI'
+    ? `<div class="btn grey" data-act="to3d" data-v="3D Model">Create 3D model</div><div class="btn grey" data-act="to3d" data-v="Character">Create Character</div>`
+    : S.cat === '3D Model'
+      ? `<div class="btn grey" data-act="anim" data-v="${item.id}">Add Animation</div><div class="btn grey" data-act="to3d" data-v="Character">Create Character</div>`
+      : `<div class="btn grey" data-act="anim" data-v="${item.id}">Add Animation</div>`;
+  const html = `<div class="overlay" data-act="close"></div>
+  <div class="modal${is3D ? ' m3d' : ''}" role="dialog" aria-label="${esc(item.name)}">
+    ${is3D ? `<div class="grid"><img src="${U('modal-grid.png')}" alt=""></div><div class="close" data-act="close" title="Close">${I('close.png',24,24)}</div>` : ''}
+    <div class="sec-head"><span class="d">${sec.date}</span><span class="t">${sec.time}</span><span class="t">${esc(sec.name)}</span>${badge(sec.kind)}</div>
+    <div class="mid">
+      <div class="nav prev${done.length < 2 ? ' off' : ''}" data-act="prev" title="Previous">${I('arrow-nav.svg',40,40)}</div>
+      <div class="pic">${I(art().large,300,is3D ? 336 : 277,`class="slide${is3D ? ' tall' : ''}" id="detailImg"`)}<p>${esc(item.name)}</p>${done.length > 1 ? `<p class="cnt">${k + 1}/${done.length}</p>` : ''}</div>
+      <div class="nav next${done.length < 2 ? ' off' : ''}" data-act="next" title="Next">${I('arrow-nav.svg',40,40)}</div>
+    </div>
+    <div class="foot">
+      <div class="grp">${grp}</div>
+      <div class="btn white" data-act="addscene" data-v="${item.id}">Add to scene</div>
+    </div>
+  </div>`;
+  stage.insertAdjacentHTML('beforeend', html);
+}
+function stepDetail(dir) {
+  const sec = findSec(D.secId); const done = sec.items.filter(i => i.status === 'done');
+  if (done.length < 2) return;
+  const k = (done.indexOf(sec.items[D.idx]) + dir + done.length) % done.length;
+  D.idx = sec.items.indexOf(done[k]); renderModal();
+}
+document.addEventListener('keydown', (e) => {
+  if (!D) return;
+  if (e.key === 'Escape') closeDetail();
+  if (e.key === 'ArrowLeft') stepDetail(-1);
+  if (e.key === 'ArrowRight') stepDetail(1);
+});
+
+/* ---------------- events (delegated) ---------------- */
+let fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true; fileInput.hidden = true; document.body.appendChild(fileInput);
+fileInput.addEventListener('change', () => {
+  const f = S.forms[S.cat]; const files = [...fileInput.files].slice(0, 5 - f.refs.length);
+  let left = files.length; if (!left) return;
+  files.forEach(file => { const r = new FileReader(); r.onload = () => { f.refs.push(r.result); if (--left === 0) renderPanel(); }; r.readAsDataURL(file); });
+  fileInput.value = '';
+});
+
+stage.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]'); if (!el || !stage.contains(el)) return;
+  const act = el.dataset.act, v = el.dataset.v; const f = S.forms[S.cat];
+  switch (act) {
+    case 'cat': if (KINDS[v]) { S.cat = v; renderPanel(); } break;
+    case 'tab': S.tab = v; renderPanel(); break;
+    case 'toggle': f[v] = !f[v]; renderPanel(); break;
+    case 'ratio': f.ratio = v; renderPanel(); break;
+    case 'variants': f.variants = +v; renderPanel(); break;
+    case 'posetype': f.pose = true; f.poseType = v; renderPanel(); break;
+    case 'addref': if (e.target.closest('[data-stop]')) return; if (f.refs.length < 5) fileInput.click(); break;
+    case 'rmref': f.refs.splice(+v, 1); renderPanel(); e.stopPropagation(); break;
+    case 'generate': generate(); break;
+    case 'open': openDetail(+v); break;
+    case 'anim': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); toast(`Pick an animation for ${it ? it.name : 'this character'}`); break; }
+    case 'close': closeDetail(); break;
+    case 'prev': stepDetail(-1); break;
+    case 'next': stepDetail(1); break;
+    case 'to3d': { const sec = findSec(D.secId); const item = sec.items[D.idx]; D = null;
+      S.cat = v; S.tab = 'gen'; const nf = S.forms[v]; nf.text = `I want to create a ${sec.name.toLowerCase()}`; if (nf.refs.length < 5) nf.refs.push(U('dog-large.png'));
+      renderModal(); renderPanel(); toast(`${item.name} sent to ${v === 'Character' ? 'Create 3D Character' : 'Create 3D Model'}`); break; }
+    case 'fav': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); if (it) { it.fav = !it.fav; el.classList.toggle('on', it.fav); toast(it.fav ? 'Added to favorites' : 'Removed from favorites'); } break; }
+    case 'addscene': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); toast(`${it ? it.name : 'Asset'} added to Scene 1`); if (D) closeDetail(); break; }
+  }
+});
+stage.addEventListener('input', (e) => {
+  if (e.target.id !== 'prompt') return;
+  const f = S.forms[S.cat]; f.text = e.target.value;
+  document.getElementById('count').textContent = f.text.length;
+  e.target.closest('.prompt').classList.toggle('filled', !!f.text);
+  const g = document.querySelector('.gen'); if (g) g.classList.toggle('off', !f.text.trim());
+});
+stage.addEventListener('keydown', (e) => {
+  if (e.target.id === 'prompt' && e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); generate(); }
+});
+
+/* ---------------- presets / reset / fit ---------------- */
+const goto = (cat) => { S.cat = cat; S.tab = 'gen'; renderPanel(); };
+document.getElementById('preset2d').onclick = () => goto('2D & UI');
+document.getElementById('preset3d').onclick = () => goto('3D Model');
+document.getElementById('presetch').onclick = () => goto('Character');
+document.getElementById('reset').onclick = () => { S = freshState(); D = null; renderShell(); };
+function fit() {
+  const box = document.getElementById('box');
+  const pickerH = document.getElementById('picker').offsetHeight;
+  const availW = document.documentElement.clientWidth - 32;
+  const availH = window.innerHeight - pickerH - 32;
+  const k = Math.max(0.2, Math.min(1, availW / 1920, availH / 1080));
+  stage.style.transform = `scale(${k})`;
+  box.style.width = (1920 * k) + 'px';
+  box.style.height = (1080 * k) + 'px';
+  document.getElementById('zoom').textContent = '1920 × 1080 · ' + Math.round(k * 100) + '%';
+}
+addEventListener('resize', fit);
+renderShell(); fit();
+// URL hooks for sharing a state: ?cat=3D%20Model&demo=I%20want%20a%20cute%20dog
+(() => { const q = new URLSearchParams(location.search);
+  if (q.get('cat') && KINDS[q.get('cat')]) { S.cat = q.get('cat'); renderPanel(); }
+  if (q.get('tab') === 'assets') { S.tab = 'assets'; renderPanel(); }
+  if (q.get('demo')) { const ta = document.getElementById('prompt'); ta.value = q.get('demo'); ta.dispatchEvent(new Event('input', { bubbles: true })); generate(); } })();
+</script>
