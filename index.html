@@ -330,6 +330,8 @@ const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>
 const KINDS = { '2D & UI': '2D', '3D Model': '3D', 'Character': '3D' };
 const ART = { '2D & UI': { thumb: 'dog.png', large: 'dog-large.png' }, '3D Model': { thumb: 'dog.png', large: 'dog-large.png' }, 'Character': { thumb: 'cat.png', large: 'cat-turn.webp' } };
 const art = () => ART[S.cat];
+const PUPPIES = ['puppy1.png','puppy2.png','puppy3.png','puppy4.png'];
+const itemArt = (item) => S.cat === '2D & UI' && item && item.img ? { thumb: item.img, large: item.img } : art();
 const freshForm = (cat) => cat === '2D & UI'
   ? { text: '', refs: [], ratio: '1:1', variants: 4, nineSlice: false, transparent: false }
   : { text: '', refs: [], split: false, texture: false, pose: false, poseType: 'A-Pose' };
@@ -499,7 +501,7 @@ const card = (item, kind, opts={}) => {
   const done = item.status === 'done';
   return `<div class="card${done?' done':''}" data-id="${item.id}">
     <div class="thumb"${done?` data-act="open" data-v="${item.id}"`:''}>
-      ${done ? I(art().thumb,92,85,`class="dog${item.fresh?' reveal':''}"`) : I('loading.gif',40,40,'class="spin"') + `<div class="prog"><i style="width:${item.progress||0}%"></i></div>`}
+      ${done ? I(itemArt(item).thumb,92,85,`class="dog${item.fresh?' reveal':''}"`) : I('loading.gif',40,40,'class="spin"') + `<div class="prog"><i style="width:${item.progress||0}%"></i></div>`}
       ${opts.badge ? badge(kind) : ''}
       ${done ? `<div class="hover">${I('favorite.svg',20,20,`class="fav${item.fav?' on':''}" data-act="fav" data-v="${item.id}" title="Favorite"`)}${I('add-circle-brand.svg',24,24,`data-act="addscene" data-v="${item.id}" title="Add to scene"`)}</div>` : ''}
     </div>
@@ -563,7 +565,7 @@ function generate() {
   const name = nameFromPrompt(f.text);
   const n = kind === '2D' ? f.variants : 1;
   const items = Array.from({ length: n }, (_, i) => ({ id: uid++, status: 'generating', progress: 0,
-    name: kind === '2D' ? `${name} ${pad(i + 1)}` : name }));
+    name: kind === '2D' ? `${name} ${pad(i + 1)}` : name, img: S.cat === '2D & UI' ? PUPPIES[i % PUPPIES.length] : undefined }));
   const section = { id: uid++, date: `${pad(now.getMonth() + 1)}-${pad(now.getDate())}`, time: `${pad(now.getHours())}:${pad(now.getMinutes())}`, name, kind, items };
   S.assets[S.cat].unshift(section);
   S.busy = true; S.tab = 'assets';
@@ -626,7 +628,7 @@ function renderModal() {
     <div class="sec-head"><span class="d">${sec.date}</span><span class="t">${sec.time}</span><span class="t">${esc(sec.name)}</span>${badge(sec.kind)}</div>
     <div class="mid">
       <div class="nav prev${done.length < 2 ? ' off' : ''}" data-act="prev" title="Previous">${I('arrow-nav.svg',40,40)}</div>
-      <div class="pic">${I(art().large,300,is3D ? 336 : 277,`class="slide${is3D ? ' tall' : ''}" id="detailImg"`)}<p>${esc(item.name)}</p>${done.length > 1 ? `<p class="cnt">${k + 1}/${done.length}</p>` : ''}</div>
+      <div class="pic">${I(itemArt(item).large,300,is3D ? 336 : 277,`class="slide${is3D ? ' tall' : ''}" id="detailImg"`)}<p>${esc(item.name)}</p>${done.length > 1 ? `<p class="cnt">${k + 1}/${done.length}</p>` : ''}</div>
       <div class="nav next${done.length < 2 ? ' off' : ''}" data-act="next" title="Next">${I('arrow-nav.svg',40,40)}</div>
     </div>
     <div class="foot">
@@ -676,8 +678,8 @@ stage.addEventListener('click', (e) => {
     case 'close': closeDetail(); break;
     case 'prev': stepDetail(-1); break;
     case 'next': stepDetail(1); break;
-    case 'to3d': { const sec = findSec(D.secId); const item = sec.items[D.idx]; D = null;
-      S.cat = v; S.tab = 'gen'; const nf = S.forms[v]; nf.text = `I want to create a ${sec.name.toLowerCase()}`; if (nf.refs.length < 5) nf.refs.push(U('dog-large.png'));
+    case 'to3d': { const sec = findSec(D.secId); const item = sec.items[D.idx]; const refImg = itemArt(item).large; D = null;
+      S.cat = v; S.tab = 'gen'; const nf = S.forms[v]; nf.text = `I want to create a ${sec.name.toLowerCase()}`; if (nf.refs.length < 5) nf.refs.push(U(refImg));
       renderModal(); renderPanel(); toast(`${item.name} sent to ${v === 'Character' ? 'Create 3D Character' : 'Create 3D Model'}`); break; }
     case 'fav': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); if (it) { it.fav = !it.fav; el.classList.toggle('on', it.fav); toast(it.fav ? 'Added to favorites' : 'Removed from favorites'); } break; }
     case 'addscene': { const it = S.assets[S.cat].flatMap(s => s.items).find(i => i.id === +v); toast(`${it ? it.name : 'Asset'} added to Scene 1`); if (D) closeDetail(); break; }
