@@ -3,6 +3,14 @@
 Interactive HTML/CSS/JS reproduction of the Wanaka Studio "Create" flow from the Figma file
 (section `0902/0903` + detail screens), built 1:1 at 1920×1080 and scaled to fit the browser window.
 
+## Plan B · chat generation (3D flow)
+
+`plan-b.html` explores the alternative layout: the left panel keeps the categories and the asset library, and generation happens in a dedicated **Create Assets** chat on the right so style stays continuous across assets.
+
+Flow: pick **3D Model** → **Generate now** opens `Create Assets 01` → describe the model → result card → **Add to scene**. Review any step with `plan-b.html?step=1..7` (matches the Figma frames in section 0909/0910).
+
+Live: https://belendali.github.io/wanaka-studio-demo/plan-b.html
+
 ## Run
 
 - Open `index.html` in a browser (assets are loaded from `assets/`), or
