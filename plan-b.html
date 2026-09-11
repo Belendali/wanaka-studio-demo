@@ -1052,7 +1052,7 @@ const chat = () => {
     <div class="composer-area">
       <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg',6,6)}</div></div>
       <div class="composer">
-        ${assets ? `<div class="vrow"><span class="vl">Variants</span>${[1,2,4].map(n => `<span class="vchip${(S.variants || 1) === n ? ' on' : ''}" data-act="vset" data-v="${n}">${n}</span>`).join('')}</div>` : ''}
+        ${assets && S.showAdvanced ? `<div class="vrow"><span class="vl">Variants</span>${[1,2,4].map(n => `<span class="vchip${(S.variants || 1) === n ? ' on' : ''}" data-act="vset" data-v="${n}">${n}</span>`).join('')}</div>` : ''}
         <textarea id="cbInput" placeholder="${ph}" aria-label="${ph}"></textarea>
         <div class="ctl">
           <div class="lft"><div class="cbtn">${I('btn-circle.svg',32,32,'class="base"')}${I('plus-line.svg',16,16,'class="plus"')}</div><div class="cbtn">${I('add-file-2.svg',32,32,'class="base"')}</div></div>
