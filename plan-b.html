@@ -426,7 +426,7 @@
   .mgroup { display: flex; flex-direction: column; gap: 8px; }
   .cfg { font: 500 14px/16px var(--font); color: #fff; }
   .mtiles3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .mtile { height: 128px; border-radius: 16px; background: rgba(255,255,255,.05); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1.5px solid transparent; font: 400 14px/16px var(--font); color: rgba(255,255,255,.8); }
+  .mtile { height: 72px; border-radius: 16px; background: rgba(255,255,255,.05); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1.5px solid transparent; font: 400 14px/16px var(--font); color: rgba(255,255,255,.8); }
   .mtile:hover { background: rgba(255,255,255,.1); } .mtile.on { border-color: var(--brand); background: rgba(192,240,0,.08); color: #fff; }
   .mman { width: 70px; height: 90px; background: url("assets/cf-mannequin.png") no-repeat; background-size: 700% 300%; opacity: .95; }
   .cfstage2 { position: absolute; left: calc(50% + 221px); top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 20px; }
@@ -1136,7 +1136,7 @@ function regenConcept(cid) {
 let AP = null; // { itemId, sel, showRig, rig }
 const MOTIONS = { Basic: [['Idle',[1,0]],['Walk',[2,0]],['Walk',[3,0]],['Run',[4,0]],['Jump',[5,0]],['Jump',[6,0]]], Emotes: [['Clap',[1,1]],['Clap',[2,1]],['Victory',[3,1]],['Pray',[4,1]],['Pray',[5,1]],['Sad',[6,1]]], Combats: [['Punch',[1,2]],['Punch',[2,2]],['Boxing',[3,2]],['Kick',[4,2]],['Block',[5,2]],['Hit',[6,2]]] };
 const ANIM_DUR = { Idle: '2.0s', Walk: '1.2s', Run: '0.8s', Jump: '1.4s', Clap: '1.6s', Victory: '2.4s', Pray: '2.0s', Sad: '3.0s', Punch: '0.6s', Boxing: '1.0s', Kick: '0.8s', Block: '0.6s', Hit: '0.5s' };
-const tile = (n, i, key) => `<div class="mtile${AP.sel === key ? ' on' : ''}" data-act="apick" data-v="${key}" title="${n} · ${ANIM_DUR[n] || ''}"><div class="mman" style="background-position:${i[0] * 100 / 6}% ${i[1] * 50}%"></div><span>${n}</span></div>`;
+const tile = (n, i, key) => `<div class="mtile${AP.sel === key ? ' on' : ''}" data-act="apick" data-v="${key}" title="${n} · ${ANIM_DUR[n] || ''}"><span>${n}</span></div>`;
 const animName = (key) => key.split('#')[0];
 function renderAnim() {
   stage.querySelectorAll('.overlay.anim, .amodal, .rigdlg').forEach(n => n.remove()); if (!AP) return;
@@ -1145,7 +1145,6 @@ function renderAnim() {
   const sec = S.thread.find(m => m.item === it || (m.gallery && m.gallery.items.includes(it)));
   stage.insertAdjacentHTML('beforeend', `<div class="overlay anim" data-act="aclose"></div>
   <div class="amodal" role="dialog" aria-label="Add Animation">
-    <div class="ambg"></div>
     <div class="amhead"><span class="d">${pad(now.getMonth() + 1)}-${pad(now.getDate())}</span><span class="t">${pad(now.getHours())}:${pad(now.getMinutes())}</span><span class="t">${esc(it.short || it.name)}</span>${badge('3D')}</div>
     <div class="close" data-act="aclose" title="Close">${I('close.png',24,24)}</div>
     <div class="mpanel">
@@ -1196,20 +1195,20 @@ stage.addEventListener('click', (e) => {
     case 'showrig': if (AP) { AP.showRig = !AP.showRig; renderAnim(); } break;
     case 'aadd': { if (!AP) break; const it = S.lib.find(i => i.id === AP.itemId); if (it) { it.anim = animName(AP.sel); placeB(it); } AP = null; renderAnim(); renderChat(); toast(`${it ? it.short : 'Character'} added to Scene 1 with ${it ? it.anim : ''}`); break; }
     case 'adownload': { const it = S.lib.find(i => i.id === AP.itemId); toast(`Downloading ${it ? it.name : 'model'} with ${animName(AP.sel)}…`); break; }
-    case 'editrig2': { const it = S.lib.find(i => i.id === +v); if (it) { AP = { itemId: it.id, sel: it.anim ? it.anim + '#Basic0' : 'Idle#Basic0', showRig: true, rig: { step: 1, x: 0, y: 0, z: 0 } }; renderAnim(); } break; }
+    case 'editrig2': { const it = S.lib.find(i => i.id === +v); if (it) { AP = { itemId: it.id, sel: it.anim ? it.anim + '#Basic0' : 'Idle#Basic0', showRig: false, rig: { step: 1, x: 0, y: 0, z: 0 } }; renderAnim(); } break; }
     case 'editrig': if (AP) { AP.rig = { step: 1, x: 0, y: 0, z: 0 }; renderAnim(); } break;
     case 'rigclose': if (AP) { AP.rig = null; renderAnim(); } break;
     case 'rignext': if (AP && AP.rig) { AP.rig.step = 2; renderAnim(); } break;
     case 'rigback': if (AP && AP.rig) { AP.rig.step = 1; renderAnim(); } break;
     case 'rigreset': if (AP && AP.rig) { AP.rig.x = AP.rig.y = AP.rig.z = 0; renderAnim(); } break;
-    case 'rigdone': if (AP && AP.rig) { AP.rig = null; AP.showRig = true; renderAnim(); toast('Rig updated · animations regenerated'); } break;
+    case 'rigdone': if (AP && AP.rig) { AP.rig = null; renderAnim(); toast('Rig updated · animations regenerated'); } break;
     case 'aapply': { if (!AP) break; const it = S.lib.find(i => i.id === AP.itemId); if (it) { it.anim = animName(AP.sel); } AP = null; renderAnim(); renderChat(); toast(`${it ? it.short : 'Character'} now plays ${it ? it.anim : ''}`); break; }
     case 'gaddall': { const m = S.thread.find(m => m.gallery && m.gallery.id === +v); if (m) { m.gallery.items.forEach(it => placeB(it)); toast(`${m.gallery.items.length} assets added to Scene 1`); } break; }
     case 'gkeep': { const m = S.thread.find(m => m.gallery && m.gallery.id === +v); if (m) { const keep = m.gallery.items[m.gallery.sel]; const drop = m.gallery.items.filter(it => it !== keep); S.lib = S.lib.filter(it => !drop.includes(it)); m.role = 'result'; m.item = keep; delete m.gallery; renderChat(); renderPanel(); toast(`Kept ${keep.name} · ${drop.length} variants removed from the library`); } break; }
     case 'gsel': { const [gid, idx] = v.split(':'); const m = S.thread.find(m => m.gallery && m.gallery.id === +gid); if (m) { m.gallery.sel = +idx; m.gallery.fresh = true; const th = document.getElementById('thread'); const top = th ? th.scrollTop : 0; renderChat(); if (th) document.getElementById('thread').scrollTop = top; m.gallery.fresh = false; } break; }
     case 'vset': S.variants = +v; renderChat(); break;
     case 'rto3d': { const it = S.lib.find(i => i.id === +v); if (it) { S.cat = '3D Model'; renderPanel(); sendB(`Create a 3D model of ${it.short.toLowerCase()}`); } break; }
-    case 'ranim': { const it = S.lib.find(i => i.id === +v); if (it && (it.rigged || it.cat === 'Character')) { AP = { itemId: it.id, sel: (it.anim || 'Idle') + '#Basic0', showRig: true, rig: null }; renderAnim(); } else toast(`${it ? it.short || it.name : 'This model'} needs rigging first · use Create Character`); break; }
+    case 'ranim': { const it = S.lib.find(i => i.id === +v); if (it && (it.rigged || it.cat === 'Character')) { AP = { itemId: it.id, sel: (it.anim || 'Idle') + '#Basic0', showRig: false, rig: null }; renderAnim(); } else toast(`${it ? it.short || it.name : 'This model'} needs rigging first · use Create Character`); break; }
     case 'raddscene': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
     case 'libcard': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
   }
@@ -1241,7 +1240,7 @@ document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closes
     if (step === 9) S.thread.push({ role: 'concept', concept: { id: uid++, item: it, left: 7 } });
     if (step === 10) S.thread.push({ role: 'rig', rig: { stage: 1, item: it } });
     if (step >= 11) { it.rigged = true; S.thread.push({ role: 'result', item: it }); S.lib.unshift(it); }
-    if (step >= 12) { AP = { itemId: it.id, sel: 'Walk#Basic1', showRig: true, rig: step === 13 ? { step: 1, x: 0, y: 0, z: 0 } : step === 14 ? { step: 2, x: 0, y: 0, z: 0 } : null }; setTimeout(renderAnim, 0); } }
+    if (step >= 12) { AP = { itemId: it.id, sel: 'Walk#Basic1', showRig: false, rig: step === 13 ? { step: 1, x: 0, y: 0, z: 0 } : step === 14 ? { step: 2, x: 0, y: 0, z: 0 } : null }; setTimeout(renderAnim, 0); } }
   if (step === 8) { S.thread = []; S.scene = []; const items = [1,2,3,4].map(i => { const it = mk(CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models'); it.name = it.name.replace(/(_[23]D\.\w+)$/, ` ${pad(i)}$1`); if (i === 3) { it.img = 'cat3d-a.png'; it.large = 'cat3d-a.png'; } return it; });
     S.thread = [{ role: 'user', text: CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models' }, { role: 'gallery', gallery: { id: uid++, items, sel: 1 } }]; items.slice().reverse().forEach(it => S.lib.unshift(it)); }
   renderShell(); const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
