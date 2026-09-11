@@ -381,6 +381,21 @@
   .rimg { height: 170px; border-radius: 10px; background: #191718; display: flex; align-items: center; justify-content: center; }
   .rimg img { width: 120px; height: 111px; object-fit: contain; object-position: bottom; }
   .rimg img.fresh { animation: reveal .45s ease-out both; }
+  .gal { display: flex; gap: 8px; height: 216px; }
+  .gbig { position: relative; width: 280px; height: 216px; border-radius: 10px; background: #191718; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .gbig img.gimg { width: 150px; height: 139px; object-fit: contain; object-position: bottom; }
+  .gbig img.gimg.fresh { animation: reveal .3s ease-out both; }
+  .gcount { position: absolute; right: 8px; top: 8px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,.55); color: #fff; font: 500 11px/14px var(--font); }
+  .gthumbs { width: 56px; display: flex; flex-direction: column; gap: 8px; }
+  .gth { width: 56px; height: 48px; border-radius: 8px; background: #191718; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: .7; border: 1.5px solid transparent; }
+  .gth:hover { opacity: 1; }
+  .gth.on { opacity: 1; border-color: var(--brand); }
+  .gth img.gti { width: 36px; height: 33px; object-fit: contain; object-position: bottom; }
+  .vrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .vrow .vl { font: 400 11px/14px var(--font); color: var(--w32); margin-right: 2px; }
+  .vchip { min-width: 22px; padding: 2px 6px; border-radius: 6px; background: var(--w08); color: var(--w65); font: 500 11px/14px var(--font); text-align: center; cursor: pointer; }
+  .vchip.on { background: #fff; color: #1a1517; }
+  .composer textarea { height: 24px; }
   .rfile { font: 400 14px/21px var(--font); color: var(--w80); }
   .racts { display: flex; gap: 8px; }
   .racts .btn.grey { width: 128px; font-weight: 500; }
@@ -919,12 +934,18 @@ const thinkingB = () => `<div class="think">
     <div class="step">${I('check.svg',16,16)}<span>Understand the request and pick a style</span></div>
     <div class="step todo doing">${I('step-refresh.svg',16,16)}<span>${S.cat === '2D & UI' ? 'Draw the image and remove the background' : 'Generate base mesh and textures'}</span></div>
     <div class="step todo">${I('step-dot.svg',16,16)}<span>${S.cat === '2D & UI' ? 'Export .png' : 'Optimize and export .glb'}</span></div></div>`;
+const galleryB = (g) => { const sel = g.items[g.sel]; return `<div class="rcard" data-gid="${g.id}"><p class="lbl">${g.items.length} variants are ready to review.</p>
+    <div class="rbox"><div class="gal">
+      <div class="gbig">${I(sel.large,150,139,`class="gimg${g.fresh ? ' fresh' : ''}"`)}<span class="gcount">${g.sel + 1} / ${g.items.length}</span></div>
+      <div class="gthumbs">${g.items.map((it, i) => `<div class="gth${i === g.sel ? ' on' : ''}" data-act="gsel" data-v="${g.id}:${i}" title="${esc(it.name)}">${I(it.img,36,33,'class="gti"')}</div>`).join('')}</div>
+    </div><p class="rfile">${esc(sel.name)} · ${g.items.length} variants</p>
+      <div class="racts">${sel.kind === '2D' ? `<div class="btn grey" data-act="rto3d" data-v="${sel.id}">Create 3D model</div>` : `<div class="btn grey" data-act="ranim" data-v="${sel.id}">Add Animation</div>`}<div class="btn white" data-act="raddscene" data-v="${sel.id}">Add to scene</div></div></div></div>`; };
 const resultB = (it) => `<div class="rcard"><p class="lbl">Your asset is ready to review.</p>
     <div class="rbox"><div class="rimg">${I(it.large,120,111,`class="${it.fresh ? 'fresh' : ''}"`)}</div><p class="rfile">${esc(it.name)}</p>
       <div class="racts">${it.kind === '2D' ? `<div class="btn grey" data-act="rto3d" data-v="${it.id}">Create 3D model</div>` : `<div class="btn grey" data-act="ranim" data-v="${it.id}">Add Animation</div>`}<div class="btn white" data-act="raddscene" data-v="${it.id}">Add to scene</div></div></div></div>`;
 const userB = (m) => `<div class="user-msg"><div class="bubble">${esc(m.text)}</div><div class="msg-actions">${I('msg-copy.svg',16,16)}${I('msg-edit.svg',16,16)}</div></div>`;
 const assetsThread = () => S.thread.length
-  ? `<div class="thread" id="thread">${S.thread.map(m => m.role === 'user' ? userB(m) : m.role === 'thinking' ? thinkingB() : resultB(m.item)).join('')}</div>`
+  ? `<div class="thread" id="thread">${S.thread.map(m => m.role === 'user' ? userB(m) : m.role === 'thinking' ? thinkingB() : m.role === 'gallery' ? galleryB(m.gallery) : resultB(m.item)).join('')}</div>`
   : `<div class="cb-empty">${I('empty-3d.png',180,180)}<p class="t">${S.cat === 'Character' ? 'Character' : S.cat === '2D & UI' ? '2D & UI' : '3D Model'}</p><p class="s">Create with images and context.</p></div>`;
 const chatMenu = () => `<div class="chat-menu" id="chatmenu">
     <p class="g">Game</p><div class="it${S.chat==='game'?' on':''}" data-act="chatpick" data-v="game"><span>Game creating</span><small>Wana · plan &amp; build</small></div>
@@ -941,6 +962,7 @@ const chat = () => {
     <div class="composer-area">
       <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg',6,6)}</div></div>
       <div class="composer">
+        ${assets ? `<div class="vrow"><span class="vl">Variants</span>${[1,2,4].map(n => `<span class="vchip${(S.variants || 1) === n ? ' on' : ''}" data-act="vset" data-v="${n}">${n}</span>`).join('')}</div>` : ''}
         <textarea id="cbInput" placeholder="${ph}" aria-label="${ph}"></textarea>
         <div class="ctl">
           <div class="lft"><div class="cbtn">${I('btn-circle.svg',32,32,'class="base"')}${I('plus-line.svg',16,16,'class="plus"')}</div><div class="cbtn">${I('add-file-2.svg',32,32,'class="base"')}</div></div>
@@ -963,7 +985,8 @@ function assetName(text) {
   let s = text.trim().replace(/[.!。！]+$/, '');
   s = s.replace(/^(please\s+)?(i\s+(want|need|would like)\s+(to\s+)?)?(create|generate|make|build|draw|design)\s+(a|an|the|some)?\s*/i, '');
   s = s.replace(/\s+(like|similar to)\s+(this|that|it|the.*)$/i, '');
-  s = s.replace(/^(a|an|the)\s+/i, ''); if (!s) s = text.trim();
+  s = s.replace(/^(a|an|the)\s+/i, '');
+  s = s.replace(/^(2|3|4|two|three|four)\s+/i, '').replace(/^(\w+(?:\s+\w+)*?)s(\s+(?:like|similar).*)?$/i, (m, a, b) => a + (b || '')); if (!s) s = text.trim();
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 function sendB(textOverride) {
@@ -973,15 +996,19 @@ function sendB(textOverride) {
   if (ta) ta.value = '';
   S.thread.push({ role: 'user', text }); S.thread.push({ role: 'thinking' }); S.busy = true; renderChat();
   const cat = S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model';
-  const item = makeItem(text, cat);
+  const n = Math.min(4, Math.max(1, S.variants || countFromText(text)));
+  const items = Array.from({ length: n }, (_, i) => { const it = makeItem(text, cat); if (n > 1) { it.name = it.name.replace(/(_[23]D\.\w+)$/, ` ${pad(i + 1)}$1`); if (cat === '3D Model' || cat === 'Character') { it.img = i % 2 ? 'cat3d-a.png' : it.img; it.large = i % 2 ? 'cat3d-a.png' : it.large; } } return it; });
   setTimeout(() => {
-    S.thread = S.thread.filter(m => m.role !== 'thinking'); item.fresh = true;
-    S.thread.push({ role: 'result', item }); S.lib.unshift(item); S.busy = false;
-    renderChat(); renderPanel(); item.fresh = false;
-    toast(`${item.name} is ready · added to your library`);
+    S.thread = S.thread.filter(m => m.role !== 'thinking');
+    if (n === 1) { const item = items[0]; item.fresh = true; S.thread.push({ role: 'result', item }); }
+    else { S.thread.push({ role: 'gallery', gallery: { id: uid++, items, sel: 0, fresh: true } }); }
+    items.slice().reverse().forEach(it => S.lib.unshift(it)); S.busy = false; S.variants = 1;
+    renderChat(); renderPanel(); items.forEach(it => { it.fresh = false; }); S.thread.forEach(m => { if (m.gallery) m.gallery.fresh = false; });
+    toast(n === 1 ? `${items[0].name} is ready · added to your library` : `${n} variants ready · all added to your library`);
   }, 3200);
 }
 let puppyN = 0;
+function countFromText(text) { const m = text.match(/\b(2|3|4|two|three|four)\b/i); if (!m) return 1; return ({ two: 2, three: 3, four: 4 })[m[1].toLowerCase()] || parseInt(m[1], 10); }
 function makeItem(text, cat) {
   const short = assetName(text); const isCat = /\b(cat|kitten|kitty)\b/i.test(text);
   if (cat === '2D & UI') { const p = `puppy${(puppyN++ % 4) + 1}.png`; return { id: uid++, name: `${short}_2D.png`, short, img: isCat ? 'cat3d-a.png' : p, large: isCat ? 'cat3d-a.png' : p, kind: '2D', cat }; }
@@ -1002,6 +1029,8 @@ stage.addEventListener('click', (e) => {
     case 'chatpick': S.chat = v; S.menu = false; if (v === 'assets' && !S.chatNo) S.chatNo = 1; renderChat(); break;
     case 'newchat': S.chat = 'assets'; S.chatNo += 1; S.thread = []; S.menu = false; renderChat(); toast(`Create Assets ${pad(S.chatNo)} started`); break;
     case 'send': sendB(); break;
+    case 'gsel': { const [gid, idx] = v.split(':'); const m = S.thread.find(m => m.gallery && m.gallery.id === +gid); if (m) { m.gallery.sel = +idx; m.gallery.fresh = true; const th = document.getElementById('thread'); const top = th ? th.scrollTop : 0; renderChat(); if (th) document.getElementById('thread').scrollTop = top; m.gallery.fresh = false; } break; }
+    case 'vset': S.variants = +v; renderChat(); break;
     case 'rto3d': { const it = S.lib.find(i => i.id === +v); if (it) { S.cat = '3D Model'; renderPanel(); sendB(`Create a 3D model of ${it.short.toLowerCase()}`); } break; }
     case 'ranim': { const it = S.lib.find(i => i.id === +v); toast(`Pick an animation for ${it ? it.short || it.name : 'this model'}`); break; }
     case 'raddscene': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
@@ -1031,6 +1060,8 @@ document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closes
   if (step >= 5) { first = mk(P[0]); S.thread = [{ role: 'user', text: P[0] }, { role: 'result', item: first }]; S.lib.unshift(first); }
   if (step >= 6) { const b = mk(P[1]); S.thread.push({ role: 'user', text: P[1] }, { role: 'result', item: b }); S.lib.unshift(b); }
   if (step >= 7 && first) { placeB(first); S.selected = null; }
+  if (step === 8) { S.thread = []; S.scene = []; const items = [1,2,3,4].map(i => { const it = mk(CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models'); it.name = it.name.replace(/(_[23]D\.\w+)$/, ` ${pad(i)}$1`); if (i === 3) { it.img = 'cat3d-a.png'; it.large = 'cat3d-a.png'; } return it; });
+    S.thread = [{ role: 'user', text: CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models' }, { role: 'gallery', gallery: { id: uid++, items, sel: 1 } }]; items.slice().reverse().forEach(it => S.lib.unshift(it)); }
   renderShell(); const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
 })();
 
