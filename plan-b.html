@@ -358,6 +358,7 @@
   .pcard:hover .pthumb { background: var(--w14); }
   .pthumb img.pi { width: 52px; height: 48px; object-fit: contain; object-position: bottom; }
   .pthumb .pbadge { position: absolute; right: 4px; top: 4px; width: 15px; height: 10px; border-radius: 4px; background: var(--brand); color: #313d00; font: 500 8px/8px var(--font); display: flex; align-items: center; justify-content: center; }
+  .pthumb .pbadge.d2 { background: #f5ec00; color: #3d3500; }
   .pthumb .pstar { position: absolute; left: 4px; bottom: 4px; width: 16px; height: 16px; }
   .pcard .pname { font: 400 10px/10px var(--font); color: var(--w60); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pcard.fresh .pthumb { animation: reveal .4s ease-out both; }
@@ -869,13 +870,17 @@ const GEN_TITLE = { 'Character': 'Character Generator', '3D Model': '3D Model Ge
 const PLACEHOLDER = { 'Character': 'Describe the character you want to create...', '3D Model': 'Describe the 3D object you want to create...', '2D & UI': 'Describe the image or UI you want to create...' };
 function bState() {
   return { plan: 'B', cat: null, chat: 'game', menu: false, thread: [], chatNo: 0,
-    lib: [1, 2, 3, 4].map(i => ({ id: uid++, name: `Puppy model 0${i}`, img: 'dog.png', large: 'dog-large.png', kind: '3D', cat: '3D Model' })) };
+    lib: [
+      ...[1, 2, 3, 4].map(i => ({ id: uid++, name: `Puppy model 0${i}`, img: 'dog.png', large: 'dog-large.png', kind: '3D', cat: '3D Model' })),
+      ...[1, 2].map(i => ({ id: uid++, name: `Puppy sticker 0${i}`, img: `puppy${i}.png`, large: `puppy${i}.png`, kind: '2D', cat: '2D & UI' })),
+      { id: uid++, name: 'Cat student', img: 'cat.png', large: 'cat-turn.webp', kind: '3D', cat: 'Character' },
+    ] };
 }
 Object.assign(S, bState());
 
 /* ---------- left panel ---------- */
 const pcard = (it) => `<div class="pcard${it.fresh ? ' fresh' : ''}" data-act="libcard" data-v="${it.id}" title="${esc(it.name)}">
-  <div class="pthumb">${I(it.img,52,48,'class="pi"')}<span class="pbadge">${it.kind}</span>${I('star.svg',16,16,'class="pstar"')}</div>
+  <div class="pthumb">${I(it.img,52,48,'class="pi"')}<span class="pbadge${it.kind === '2D' ? ' d2' : ''}">${it.kind}</span>${I('star.svg',16,16,'class="pstar"')}</div>
   <p class="pname">${esc(it.name)}</p></div>`;
 const panel = () => {
   const cat = S.cat; const lib = S.lib.filter(i => !cat || i.cat === cat);
@@ -909,13 +914,13 @@ const gameThread = () => `<div class="msgs">
 const thinkingB = () => `<div class="think">
     <p class="lbl">Thinking...</p>
     <div class="deep">${I('think-box.svg',376,146,'class="bg"')}<div class="head"><p>Deep Thinking...</p>${I('chevron-up.svg',16,16)}</div>
-      <div class="body"><p>Got it. I'll build this as a game-ready 3D model that matches the style of your other assets.</p><p>Generating the mesh, textures and a clean low-poly version for the scene.</p></div></div>
+      <div class="body"><p>Got it. I'll make this ${S.cat === '2D & UI' ? 'as a clean 2D sticker with a transparent background' : S.cat === 'Character' ? 'as a rigged character in T-pose, ready for animation' : 'as a game-ready 3D model'} that matches the style of your other assets.</p><p>${S.cat === '2D & UI' ? 'Drawing the image and cutting it out for the scene.' : 'Generating the mesh, textures and a clean low-poly version for the scene.'}</p></div></div>
     <div class="step">${I('check.svg',16,16)}<span>Understand the request and pick a style</span></div>
-    <div class="step todo doing">${I('step-refresh.svg',16,16)}<span>Generate base mesh and textures</span></div>
-    <div class="step todo">${I('step-dot.svg',16,16)}<span>Optimize and export .glb</span></div></div>`;
+    <div class="step todo doing">${I('step-refresh.svg',16,16)}<span>${S.cat === '2D & UI' ? 'Draw the image and remove the background' : 'Generate base mesh and textures'}</span></div>
+    <div class="step todo">${I('step-dot.svg',16,16)}<span>${S.cat === '2D & UI' ? 'Export .png' : 'Optimize and export .glb'}</span></div></div>`;
 const resultB = (it) => `<div class="rcard"><p class="lbl">Your asset is ready to review.</p>
     <div class="rbox"><div class="rimg">${I(it.large,120,111,`class="${it.fresh ? 'fresh' : ''}"`)}</div><p class="rfile">${esc(it.name)}</p>
-      <div class="racts"><div class="btn grey" data-act="ranim" data-v="${it.id}">Add Animation</div><div class="btn white" data-act="raddscene" data-v="${it.id}">Add to scene</div></div></div></div>`;
+      <div class="racts">${it.kind === '2D' ? `<div class="btn grey" data-act="rto3d" data-v="${it.id}">Create 3D model</div>` : `<div class="btn grey" data-act="ranim" data-v="${it.id}">Add Animation</div>`}<div class="btn white" data-act="raddscene" data-v="${it.id}">Add to scene</div></div></div></div>`;
 const userB = (m) => `<div class="user-msg"><div class="bubble">${esc(m.text)}</div><div class="msg-actions">${I('msg-copy.svg',16,16)}${I('msg-edit.svg',16,16)}</div></div>`;
 const assetsThread = () => S.thread.length
   ? `<div class="thread" id="thread">${S.thread.map(m => m.role === 'user' ? userB(m) : m.role === 'thinking' ? thinkingB() : resultB(m.item)).join('')}</div>`
@@ -966,15 +971,21 @@ function sendB(textOverride) {
   if (S.chat !== 'assets') { S.chat = 'assets'; S.chatNo = Math.max(1, S.chatNo); }
   if (ta) ta.value = '';
   S.thread.push({ role: 'user', text }); S.thread.push({ role: 'thinking' }); S.busy = true; renderChat();
-  const short = assetName(text); const isCat = /\b(cat|kitten|kitty)\b/i.test(text);
   const cat = S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model';
-  const item = { id: uid++, name: `${short}_3D.glb`, short, img: isCat ? 'cat3d-a.png' : 'dog.png', large: isCat ? 'cat3d-a.png' : 'dog-large.png', kind: cat === '2D & UI' ? '2D' : '3D', cat };
+  const item = makeItem(text, cat);
   setTimeout(() => {
     S.thread = S.thread.filter(m => m.role !== 'thinking'); item.fresh = true;
     S.thread.push({ role: 'result', item }); S.lib.unshift(item); S.busy = false;
     renderChat(); renderPanel(); item.fresh = false;
     toast(`${item.name} is ready · added to your library`);
   }, 3200);
+}
+let puppyN = 0;
+function makeItem(text, cat) {
+  const short = assetName(text); const isCat = /\b(cat|kitten|kitty)\b/i.test(text);
+  if (cat === '2D & UI') { const p = `puppy${(puppyN++ % 4) + 1}.png`; return { id: uid++, name: `${short}_2D.png`, short, img: isCat ? 'cat3d-a.png' : p, large: isCat ? 'cat3d-a.png' : p, kind: '2D', cat }; }
+  if (cat === 'Character') return { id: uid++, name: `${short}_3D.glb`, short, img: 'cat.png', large: 'cat-turn.webp', kind: '3D', cat };
+  return { id: uid++, name: `${short}_3D.glb`, short, img: isCat ? 'cat3d-a.png' : 'dog.png', large: isCat ? 'cat3d-a.png' : 'dog-large.png', kind: '3D', cat };
 }
 function openAssetsChat() {
   if (S.chat !== 'assets') { S.chat = 'assets'; if (!S.chatNo) S.chatNo = 1; }
@@ -990,6 +1001,7 @@ stage.addEventListener('click', (e) => {
     case 'chatpick': S.chat = v; S.menu = false; if (v === 'assets' && !S.chatNo) S.chatNo = 1; renderChat(); break;
     case 'newchat': S.chat = 'assets'; S.chatNo += 1; S.thread = []; S.menu = false; renderChat(); toast(`Create Assets ${pad(S.chatNo)} started`); break;
     case 'send': sendB(); break;
+    case 'rto3d': { const it = S.lib.find(i => i.id === +v); if (it) { S.cat = '3D Model'; renderPanel(); sendB(`Create a 3D model of ${it.short.toLowerCase()}`); } break; }
     case 'ranim': { const it = S.lib.find(i => i.id === +v); toast(`Pick an animation for ${it ? it.short || it.name : 'this model'}`); break; }
     case 'raddscene': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
     case 'libcard': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
@@ -1008,13 +1020,16 @@ document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closes
 (function () {
   const q = new URLSearchParams(location.search); const step = parseInt(q.get('step') || '0', 10);
   if (!step) return;
-  const mk = (text, isCat) => { const short = assetName(text); return { id: uid++, name: `${short}_3D.glb`, short, img: isCat ? 'cat3d-a.png' : 'dog.png', large: isCat ? 'cat3d-a.png' : 'dog-large.png', kind: '3D', cat: '3D Model' }; };
-  if (step >= 2) S.cat = '3D Model';
+  const CATQ = q.get('cat') && GEN_TITLE[q.get('cat')] ? q.get('cat') : '3D Model';
+  const P = CATQ === '2D & UI' ? ['Create a puppy sticker', 'Create a cat sticker like this'] : CATQ === 'Character' ? ['Create a cat student character', 'Create a cat teacher like this'] : ['Create a puppy model', 'Create a cat model like this'];
+  const mk = (text) => makeItem(text, CATQ);
+  if (step >= 2) S.cat = CATQ;
   if (step >= 3) { S.chat = 'assets'; S.chatNo = 1; }
-  if (step === 4) { S.thread = [{ role: 'user', text: 'Create a puppy model' }, { role: 'thinking' }]; S.busy = true; }
-  if (step >= 5) { const a = mk('Create a puppy model'); S.thread = [{ role: 'user', text: 'Create a puppy model' }, { role: 'result', item: a }]; S.lib.unshift(a); }
-  if (step >= 6) { const b = mk('Create a cat model like this', true); S.thread.push({ role: 'user', text: 'Create a cat model like this' }, { role: 'result', item: b }); S.lib.unshift(b); }
-  if (step >= 7) { const a = S.lib.find(i => /puppy/i.test(i.name)); placeB(a); S.selected = null; }
+  if (step === 4) { S.thread = [{ role: 'user', text: P[0] }, { role: 'thinking' }]; S.busy = true; }
+  let first = null;
+  if (step >= 5) { first = mk(P[0]); S.thread = [{ role: 'user', text: P[0] }, { role: 'result', item: first }]; S.lib.unshift(first); }
+  if (step >= 6) { const b = mk(P[1]); S.thread.push({ role: 'user', text: P[1] }, { role: 'result', item: b }); S.lib.unshift(b); }
+  if (step >= 7 && first) { placeB(first); S.selected = null; }
   renderShell(); const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
 })();
 

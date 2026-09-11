@@ -7,7 +7,7 @@ Interactive HTML/CSS/JS reproduction of the Wanaka Studio "Create" flow from the
 
 `plan-b.html` explores the alternative layout: the left panel keeps the categories and the asset library, and generation happens in a dedicated **Create Assets** chat on the right so style stays continuous across assets.
 
-Flow: pick **3D Model** → **Generate now** opens `Create Assets 01` → describe the model → result card → **Add to scene**. Review any step with `plan-b.html?step=1..7` (matches the Figma frames in section 0909/0910).
+Flow: pick **3D Model** (or **2D & UI** / **Character**) → **Generate now** opens `Create Assets 01` → describe what you need → result card → **Add to scene**. 2D results offer **Create 3D model**, which continues in the same chat. Review any step with `plan-b.html?step=1..7&cat=3D%20Model|2D%20%26%20UI|Character` (matches the Figma frames in sections 0909/0910 and the 2D & Character draft).
 
 Live: https://belendali.github.io/wanaka-studio-demo/plan-b.html
 
