@@ -1036,7 +1036,7 @@ const resultB = (it) => `${it.rigged ? `<div class="rcard"><div class="rbox"><di
 const userB = (m) => `<div class="user-msg"><div class="bubble">${esc(m.text)}</div><div class="msg-actions">${I('msg-copy.svg',16,16)}${I('msg-edit.svg',16,16)}</div></div>`;
 const assetsThread = () => S.thread.length
   ? `<div class="thread" id="thread">${S.thread.map(m => m.role === 'user' ? userB(m) : m.role === 'thinking' ? thinkingB() : m.role === 'gallery' ? galleryB(m.gallery) : m.role === 'concept' ? conceptB(m.concept) : m.role === 'rig' ? rigB(m.rig) : resultB(m.item)).join('')}</div>`
-  : `<div class="cb-empty">${I(S.cat === 'Character' ? 'empty-char.webp' : 'empty-3d.webp',180,180)}<p class="t">${S.cat === 'Character' ? 'Character' : S.cat === '2D & UI' ? '2D & UI' : '3D Model'}</p><p class="s">Create with images and context.</p></div>`;
+  : `<div class="cb-empty">${I(S.cat === 'Character' ? 'empty-char.webp' : S.cat === '2D & UI' ? 'empty-2d.webp' : 'empty-3d.webp',180,180)}<p class="t">${S.cat === 'Character' ? 'Character' : S.cat === '2D & UI' ? '2D & UI' : '3D Model'}</p><p class="s">Create with images and context.</p></div>`;
 const chatMenu = () => `<div class="chat-menu" id="chatmenu">
     <p class="g">Game</p><div class="it${S.chat==='game'?' on':''}" data-act="chatpick" data-v="game"><span>Game creating</span><small>Wana · plan &amp; build</small></div>
     <p class="g">Assets</p><div class="it${S.chat==='assets'?' on':''}" data-act="chatpick" data-v="assets"><span>Create Assets ${pad(Math.max(1, S.chatNo))}</span><small>${S.thread.filter(m => m.role === 'result').length} results</small></div>
