@@ -408,15 +408,79 @@
   .rsub { display: flex; gap: 8px; align-items: center; font: 500 12px/16px var(--font); color: var(--w65); }
   .rsub span[data-act] { cursor: pointer; } .rsub span[data-act]:hover { color: #fff; text-decoration: underline; }
   .rsub .dot { color: var(--w32); }
-  .overlay.anim { z-index: 40; }
-  .amodal { position: absolute; left: 680px; top: 300px; width: 560px; padding: 24px; border-radius: 20px; background: var(--bg); z-index: 41; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 24px 64px rgba(0,0,0,.5); }
-  .ahead .t { font: 500 16px/22px var(--font); color: #fff; } .ahead .s { font: 400 13px/18px var(--font); color: rgba(255,255,255,.5); margin-top: 4px; }
-  .atiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .atile { padding: 10px; border-radius: 12px; background: #191718; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; border: 1.5px solid transparent; }
-  .atile:hover { background: #211d1f; } .atile.on { border-color: var(--brand); }
-  .atile img.ai { width: 64px; height: 72px; object-fit: contain; object-position: bottom; }
-  .atile .an { font: 500 13px/18px var(--font); color: #fff; } .atile .ad { font: 400 11px/14px var(--font); color: rgba(255,255,255,.45); }
-  .afoot { display: flex; gap: 8px; } .afoot .btn.grey { width: 150px; } .afoot .btn.white { flex: 1 0 0; width: auto; }
+  .overlay.anim { z-index: 40; } .overlay.anim.rig { z-index: 44; }
+  .amodal { position: absolute; left: 436px; top: 114px; width: 1048px; height: 852px; border-radius: 20px; background: var(--bg); z-index: 41; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.55); }
+  .ahead { height: 52px; padding: 0 14px 0 20px; display: flex; align-items: center; justify-content: space-between; }
+  .ahead .t { font: 500 16px/22px var(--font); color: #fff; }
+  .ahead .close { width: 24px; height: 24px; cursor: pointer; border-radius: 12px; } .ahead .close:hover { background: var(--w08); }
+  .cfws { position: absolute; left: 0; top: 52px; width: 1048px; height: 800px; background: #0d0a0b url("assets/cf-bg.jpg") center/cover no-repeat; overflow: hidden; }
+  .cfleft { position: absolute; left: 12px; top: 12px; width: 250px; display: flex; flex-direction: column; gap: 8px; }
+  .cfmode { display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(5px); width: max-content; }
+  .cfm { width: 50px; padding: 8px 0 6px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 400 10px/12px var(--font); color: var(--w65); cursor: pointer; }
+  .cfm img { width: 24px; height: 24px; opacity: .8; }
+  .cfm.on { background: rgba(192,240,0,.14); color: var(--brand); } .cfm.on img { opacity: 1; filter: drop-shadow(0 0 0 #c0f000) sepia(1) saturate(6) hue-rotate(40deg) brightness(1.2); }
+  .cfpanel { padding: 16px; border-radius: 14px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(5px); display: flex; flex-direction: column; gap: 12px; max-height: 690px; overflow-y: auto; }
+  .cfpanel::-webkit-scrollbar { width: 0; }
+  .cfh { font: 500 16px/16px var(--font); color: #fff; }
+  .cfbtn { width: 100%; padding: 6px 16px; }
+  .cfrow { display: flex; align-items: center; justify-content: space-between; font: 400 14px/16px var(--font); color: #fff; }
+  .sw { width: 52px; height: 32px; border-radius: 16px; background: var(--w14); position: relative; cursor: pointer; transition: background .2s; }
+  .sw i { position: absolute; left: 4px; top: 4px; width: 24px; height: 24px; border-radius: 12px; background: #fff; transition: left .2s; }
+  .sw.on { background: var(--brand); } .sw.on i { left: 24px; background: #fff; }
+  .cfdiv { height: 1px; background: var(--w08); }
+  .cfsearch { background: var(--w06); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; }
+  .cfg { font: 500 14px/16px var(--font); color: #fff; margin-top: 4px; }
+  .mtiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mtile { height: 126px; border-radius: 10px; background: rgba(255,255,255,.06); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 8px; gap: 6px; cursor: pointer; border: 1.5px solid transparent; font: 400 14px/16px var(--font); color: #fff; }
+  .mtile:hover { background: rgba(255,255,255,.1); } .mtile.on { border-color: var(--brand); background: rgba(192,240,0,.08); }
+  .mman { width: 60px; height: 84px; background: url("assets/cf-mannequin.png") no-repeat; background-size: 700% 300%; opacity: .9; }
+  .cfplate { position: absolute; left: 50%; top: 32px; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; background: #272123; border: 1px solid var(--w14); font: 400 20px/24px var(--mono); color: #fff; letter-spacing: .02em; }
+  .cfplate::before, .cfplate::after { content: ''; position: absolute; top: -32px; width: 1px; height: 32px; background: var(--w20); left: 60px; } .cfplate::after { left: auto; right: 60px; }
+  .cfapply { position: absolute; right: 16px; top: 16px; width: auto; padding: 8px 18px; }
+  .cfstage { position: absolute; left: calc(50% + 120px); top: calc(50% + 22px); transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .cfchar { position: relative; width: 340px; height: 414px; }
+  .cfchar img.cfimg { width: 340px; height: 414px; object-fit: contain; object-position: bottom; }
+  .cfchar .cfrigimg { position: absolute; left: 1%; top: 22%; width: 82%; height: 60%; pointer-events: none; opacity: .95; }
+  .cfcap { width: 448px; text-align: center; font: 500 16px/1.7 var(--font); color: rgba(255,255,255,.4); } .cfcap b { color: #fff; font-weight: 500; }
+  .cfpipe { position: absolute; left: calc(50% + 120px); top: 739px; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+  .cfpipe span { padding: 6px 16px; border-radius: 16px; background: rgba(255,255,255,.1); font: 500 12px/1.7 var(--font); color: #fff; white-space: nowrap; }
+  .cfpipe span.done, .cfpipe span.cur { color: var(--brand); } .cfpipe span.cur { background: rgba(192,240,0,.14); }
+  .cfpipe img { width: 16px; height: 4px; }
+  /* animation preview motion */
+  .anim-idle img.cfimg { animation: a-idle 2s ease-in-out infinite; } .anim-idle .cfrigimg { animation: a-idle 2s ease-in-out infinite; }
+  .anim-walk img.cfimg, .anim-walk .cfrigimg { animation: a-walk 1.2s ease-in-out infinite; }
+  .anim-run img.cfimg, .anim-run .cfrigimg { animation: a-walk .8s ease-in-out infinite; }
+  .anim-jump img.cfimg, .anim-jump .cfrigimg { animation: a-jump 1.4s cubic-bezier(.3,0,.2,1) infinite; }
+  .anim-clap img.cfimg, .anim-clap .cfrigimg { animation: a-clap 1.6s ease-in-out infinite; }
+  .anim-victory img.cfimg, .anim-victory .cfrigimg { animation: a-victory 2.4s ease-in-out infinite; }
+  @keyframes a-idle { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-4px) scaleY(1.02); } }
+  @keyframes a-walk { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+  @keyframes a-jump { 0%,100% { transform: translateY(0) scaleY(1); } 20% { transform: translateY(6px) scaleY(.94); } 55% { transform: translateY(-60px) scaleY(1.04); } 85% { transform: translateY(4px) scaleY(.97); } }
+  @keyframes a-clap { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+  @keyframes a-victory { 0%,100% { transform: translateY(0) scale(1); } 40% { transform: translateY(-24px) scale(1.06); } 60% { transform: translateY(-20px) scale(1.06) rotate(2deg); } }
+  /* Edit Rig dialog */
+  .rigdlg { position: absolute; left: 660px; top: 168px; width: 600px; border-radius: 16px; background: var(--bg); border: .8px solid var(--w08); z-index: 45; display: flex; flex-direction: column; align-items: center; gap: 12px; padding-bottom: 24px; }
+  .rhead { width: 100%; height: 40px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; font: 400 16px/16px var(--font); color: #fff; box-shadow: inset 0 -1px 0 0 var(--w08); }
+  .rhead .close { width: 24px; height: 24px; cursor: pointer; }
+  .rbody { width: 568px; display: flex; flex-direction: column; gap: 12px; }
+  .rsteps { display: flex; align-items: center; }
+  .rsteps span { flex: 1 0 0; padding: 6px 16px; border-radius: 16px; background: var(--panel); font: 500 12px/1.7 var(--font); color: #fff; text-align: center; opacity: .4; }
+  .rsteps span.on { opacity: 1; border: 1px solid rgba(255,255,255,.6); } .rsteps i { width: 16px; height: 1px; background: var(--w20); }
+  .rtip { padding: 8px 12px; border-radius: 10px; background: var(--panel); display: flex; gap: 12px; align-items: center; font: 400 14px/21px var(--font); color: #fff; }
+  .rtip.y { color: #f5ec00; } .rtip img { flex: none; }
+  .rprev { position: relative; height: 340px; border-radius: 10px; background: var(--panel); overflow: hidden; perspective: 900px; display: flex; align-items: center; justify-content: center; }
+  .rchar { position: relative; width: 300px; height: 308px; transform-style: preserve-3d; transition: transform .15s; }
+  .rchar img.rimgc { width: 300px; height: 308px; object-fit: contain; object-position: bottom; }
+  .rchar .rrig { position: absolute; left: 1%; top: 22%; width: 82%; height: 60%; pointer-events: none; }
+  .rchar .joint { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 5px; background: var(--brand); box-shadow: 0 0 0 2px rgba(0,0,0,.5); cursor: grab; }
+  .rgz { position: absolute; right: 24px; top: 20px; opacity: .9; }
+  .rsliders { display: flex; align-items: center; gap: 16px; padding: 12px 0; }
+  .rsl { flex: 1 0 0; display: flex; flex-direction: column; gap: 8px; font: 400 14px/16px var(--font); color: #fff; }
+  .rsl > span { display: flex; justify-content: space-between; align-items: center; } .rsl > span b { padding: 2px 8px; border-radius: 6px; background: var(--panel); font-weight: 400; }
+  .rsl input { -webkit-appearance: none; width: 100%; height: 20px; border-radius: 10px; background: var(--panel); outline: none; }
+  .rsl input::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 16px; border-radius: 8px; background: #fff; border: 4px solid #222; cursor: pointer; }
+  .rreset { width: 36px; height: 48px; cursor: pointer; flex: none; }
+  .rfoot { width: 568px; display: flex; justify-content: flex-end; gap: 16px; } .rfoot .btn { width: auto; padding: 6px 16px; }
   .rfile { font: 400 14px/21px var(--font); color: var(--w80); }
   .racts { display: flex; gap: 8px; }
   .racts .btn.grey { width: 128px; font-weight: 500; }
@@ -1076,19 +1140,57 @@ function regenConcept(cid) {
   const text = [...S.thread].reverse().find(x => x.role === 'user'); S.thread = S.thread.filter(x => x !== m);
   S.thread.push({ role: 'thinking' }); S.busy = true; renderChat(); startCharacter(text ? text.text : 'Create a cat student character');
 }
-/* ---- animation picker ---- */
-let AP = null;
+/* ---- Add Animation: Character Factory workspace in a modal + Edit Rig dialog ---- */
+let AP = null; // { itemId, sel, showRig, rig: null | { step, x, y, z } }
+const MOTIONS = { Basic: [['Idle','2.0s',[0,0]],['Walk','1.2s',[1,0]],['Run','0.8s',[2,0]],['Jump','1.4s',[3,0]]], Emotes: [['Clap','1.6s',[1,1]],['Victory','2.4s',[4,2]]] };
+const tile = (n, d, i) => `<div class="mtile${AP.sel === n ? ' on' : ''}" data-act="apick" data-v="${n}" title="${n} · ${d}"><div class="mman" style="background-position:${i[0] * 100 / 6}% ${i[1] * 50}%"></div><span>${n}</span></div>`;
 function renderAnim() {
-  stage.querySelectorAll('.overlay.anim, .amodal').forEach(n => n.remove()); if (!AP) return;
+  stage.querySelectorAll('.overlay.anim, .amodal, .rigdlg').forEach(n => n.remove()); if (!AP) return;
   const it = S.lib.find(i => i.id === AP.itemId); if (!it) { AP = null; return; }
+  const sel = AP.sel; const dur = [...MOTIONS.Basic, ...MOTIONS.Emotes].find(m => m[0] === sel);
   stage.insertAdjacentHTML('beforeend', `<div class="overlay anim" data-act="aclose"></div>
-  <div class="amodal" role="dialog" aria-label="Choose an animation">
-    <div class="ahead"><p class="t">Choose an animation</p><p class="s">Applied to ${esc(it.short || it.name)} · you can change it any time from the card.</p></div>
-    <div class="atiles">${ANIMS.map(([n, d]) => `<div class="atile${AP.sel === n ? ' on' : ''}" data-act="apick" data-v="${n}">${I('cat-turn.webp',64,72,'class="ai"')}<p class="an">${n}</p><p class="ad">${d} · loop</p></div>`).join('')}</div>
-    <div class="afoot"><div class="btn grey" data-act="aclose">Cancel</div><div class="btn white" data-act="aapply">Apply ${esc(AP.sel)}</div></div>
-  </div>`);
+  <div class="amodal" role="dialog" aria-label="Add Animation">
+    <div class="ahead"><p class="t">Add Animation · ${esc(it.short || it.name)}</p><div class="close" data-act="aclose" title="Close">${I('close.png',24,24)}</div></div>
+    <div class="cfws">
+      <div class="cfleft">
+        <div class="cfmode"><div class="cfm">${I('cf-tab-model.svg',24,24)}<span>Model</span></div><div class="cfm on">${I('cf-tab-anim.svg',24,24)}<span>Anim</span></div></div>
+        <div class="cfpanel">
+          <p class="cfh">Rig</p>
+          <div class="btn grey cfbtn" data-act="editrig">Edit Rig</div>
+          <div class="cfrow"><span>Show Rig</span><div class="sw${AP.showRig ? ' on' : ''}" data-act="showrig"><i></i></div></div>
+          <div class="cfdiv"></div>
+          <p class="cfh">Motion</p>
+          <div class="search cfsearch">${I('cf-search.svg',12,12)}<span>Search</span></div>
+          ${Object.entries(MOTIONS).map(([g, list]) => `<p class="cfg">${g}</p><div class="mtiles">${list.map(([n, d, i]) => tile(n, d, i)).join('')}</div>`).join('')}
+        </div>
+      </div>
+      <div class="cfplate">Character Factory</div>
+      <div class="btn white cfapply" data-act="aapply">Apply ${esc(sel)}</div>
+      <div class="cfstage">
+        <div class="cfchar anim-${sel.toLowerCase()}" id="cfchar">${I(sel ? 'cat-turn.webp' : 'cat-turn-poster.png',340,414,'class="cfimg"')}${AP.showRig ? `<img src="${U('cf-rig.svg')}" class="cfrigimg" alt="">` : ''}</div>
+        <p class="cfcap">${sel ? `Previewing <b>${esc(sel)}</b> · ${dur ? dur[1] : ''} loop · press Apply to use it` : 'Select animations for your character'}</p>
+      </div>
+      <div class="cfpipe"><span class="done">Text/Image</span><img src="${U('cf-arrow-a.svg')}" alt=""><span class="done">3D model</span><img src="${U('cf-arrow-b.svg')}" alt=""><span class="cur">Auto-Rig &amp; Animate</span><img src="${U('cf-arrow-a.svg')}" alt=""><span>Import to Game</span></div>
+    </div>
+  </div>
+  ${AP.rig ? rigDlg(it) : ''}`);
 }
-document.addEventListener('keydown', (e) => { if (AP && e.key === 'Escape') { AP = null; renderAnim(); } }, true);
+const rigDlg = (it) => { const r = AP.rig; const rot = `rotateX(${r.x}deg) rotateY(${r.y}deg) rotateZ(${r.z}deg)`;
+  return `<div class="overlay anim rig" data-act="rigclose"></div><div class="rigdlg" role="dialog" aria-label="Regenerate anims">
+    <div class="rhead"><span>Regenerate anims</span><div class="close" data-act="rigclose">${I('close.png',24,24)}</div></div>
+    <div class="rbody">
+      <div class="rsteps"><span class="${r.step === 1 ? 'on' : ''}">1. Orient Model</span><i></i><span class="${r.step === 2 ? 'on' : ''}">2. Edit Rig</span></div>
+      ${r.step === 1 ? `<div class="rtip y">${I('warn-yellow.svg',24,24)}<span>Only humanoid animations are supported for now. Animations for other shapes will be available soon.</span></div>
+      <div class="rtip">${I('warn-white.svg',24,24)}<span>Rotate the model so it stands upright and faces out of the screen (toward you), then continue.</span></div>` :
+      `<div class="rtip">${I('warn-white.svg',24,24)}<span>Auto-rig found 18 joints. Drag a joint if it sits off the body, then finish.</span></div>`}
+      <div class="rprev"><div class="rchar" style="transform:${rot}">${I('cat-turn-poster.png',300,340,'class="rimgc"')}${r.step === 2 ? `<img src="${U('cf-rig.svg')}" class="rrig" alt="">${[[50,22],[50,40],[30,42],[70,42],[16,50],[84,50],[42,70],[58,70],[42,92],[58,92]].map(([x, y]) => `<b class="joint" style="left:${x}%;top:${y}%"></b>`).join('')}` : ''}</div>
+        </div>
+      ${r.step === 1 ? `<div class="rsliders">${['x','y','z'].map(a => `<label class="rsl"><span>${a.toUpperCase()}<b>${r[a]}°</b></span><input type="range" min="-180" max="180" value="${r[a]}" data-axis="${a}"></label>`).join('')}<div class="rreset" data-act="rigreset" title="Reset">${I('reset.svg',36,48)}</div></div>` : ''}
+    </div>
+    <div class="rfoot">${r.step === 2 ? `<div class="btn grey" data-act="rigback">Back</div><div class="btn white" data-act="rigdone">Done</div>` : `<div class="btn grey" data-act="rigclose">Cancel</div><div class="btn white" data-act="rignext">Next</div>`}</div>
+  </div>`; };
+stage.addEventListener('input', (e) => { if (e.target.matches('.rsl input') && AP && AP.rig) { AP.rig[e.target.dataset.axis] = +e.target.value; const ch = stage.querySelector('.rchar'); if (ch) ch.style.transform = `rotateX(${AP.rig.x}deg) rotateY(${AP.rig.y}deg) rotateZ(${AP.rig.z}deg)`; const b = e.target.previousElementSibling.querySelector('b'); if (b) b.textContent = e.target.value + '°'; } });
+document.addEventListener('keydown', (e) => { if (AP && e.key === 'Escape') { if (AP.rig) AP.rig = null; else AP = null; renderAnim(); } }, true);
 function openAssetsChat() {
   if (S.chat !== 'assets') { S.chat = 'assets'; if (!S.chatNo) S.chatNo = 1; }
   S.menu = false; renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus();
@@ -1107,13 +1209,20 @@ stage.addEventListener('click', (e) => {
     case 'ccontinue': continueTo3D(+v, false); break;
     case 'aclose': AP = null; renderAnim(); break;
     case 'apick': if (AP) { AP.sel = v; renderAnim(); } break;
+    case 'showrig': if (AP) { AP.showRig = !AP.showRig; renderAnim(); } break;
+    case 'editrig': if (AP) { AP.rig = { step: 1, x: 0, y: 0, z: 0 }; renderAnim(); } break;
+    case 'rigclose': if (AP) { AP.rig = null; renderAnim(); } break;
+    case 'rignext': if (AP && AP.rig) { AP.rig.step = 2; renderAnim(); } break;
+    case 'rigback': if (AP && AP.rig) { AP.rig.step = 1; renderAnim(); } break;
+    case 'rigreset': if (AP && AP.rig) { AP.rig.x = AP.rig.y = AP.rig.z = 0; renderAnim(); } break;
+    case 'rigdone': if (AP && AP.rig) { AP.rig = null; AP.showRig = true; renderAnim(); toast('Rig updated · animations regenerated'); } break;
     case 'aapply': { if (!AP) break; const it = S.lib.find(i => i.id === AP.itemId); if (it) { it.anim = AP.sel; } AP = null; renderAnim(); renderChat(); toast(`${it ? it.short : 'Character'} now plays ${it ? it.anim : ''}`); break; }
     case 'gaddall': { const m = S.thread.find(m => m.gallery && m.gallery.id === +v); if (m) { m.gallery.items.forEach(it => placeB(it)); toast(`${m.gallery.items.length} assets added to Scene 1`); } break; }
     case 'gkeep': { const m = S.thread.find(m => m.gallery && m.gallery.id === +v); if (m) { const keep = m.gallery.items[m.gallery.sel]; const drop = m.gallery.items.filter(it => it !== keep); S.lib = S.lib.filter(it => !drop.includes(it)); m.role = 'result'; m.item = keep; delete m.gallery; renderChat(); renderPanel(); toast(`Kept ${keep.name} · ${drop.length} variants removed from the library`); } break; }
     case 'gsel': { const [gid, idx] = v.split(':'); const m = S.thread.find(m => m.gallery && m.gallery.id === +gid); if (m) { m.gallery.sel = +idx; m.gallery.fresh = true; const th = document.getElementById('thread'); const top = th ? th.scrollTop : 0; renderChat(); if (th) document.getElementById('thread').scrollTop = top; m.gallery.fresh = false; } break; }
     case 'vset': S.variants = +v; renderChat(); break;
     case 'rto3d': { const it = S.lib.find(i => i.id === +v); if (it) { S.cat = '3D Model'; renderPanel(); sendB(`Create a 3D model of ${it.short.toLowerCase()}`); } break; }
-    case 'ranim': { const it = S.lib.find(i => i.id === +v); if (it && (it.rigged || it.cat === 'Character')) { AP = { itemId: it.id, sel: it.anim || 'Idle' }; renderAnim(); } else toast(`${it ? it.short || it.name : 'This model'} needs rigging first · use Create Character`); break; }
+    case 'ranim': { const it = S.lib.find(i => i.id === +v); if (it && (it.rigged || it.cat === 'Character')) { AP = { itemId: it.id, sel: it.anim || 'Idle', showRig: true, rig: null }; renderAnim(); } else toast(`${it ? it.short || it.name : 'This model'} needs rigging first · use Create Character`); break; }
     case 'raddscene': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
     case 'libcard': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
   }
@@ -1141,11 +1250,11 @@ document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closes
   if (step >= 5) { first = mk(P[0]); S.thread = [{ role: 'user', text: P[0] }, { role: 'result', item: first }]; S.lib.unshift(first); }
   if (step >= 6) { const b = mk(P[1]); S.thread.push({ role: 'user', text: P[1] }, { role: 'result', item: b }); S.lib.unshift(b); }
   if (step >= 7 && first) { placeB(first); S.selected = null; }
-  if (step >= 9 && step <= 12) { S.cat = 'Character'; S.chat = 'assets'; S.chatNo = 1; S.thread = [{ role: 'user', text: 'Create a cat student character' }]; const it = makeItem('Create a cat student character', 'Character'); it.img = 'cat.png';
+  if (step >= 9 && step <= 14) { S.cat = 'Character'; S.chat = 'assets'; S.chatNo = 1; S.thread = [{ role: 'user', text: 'Create a cat student character' }]; const it = makeItem('Create a cat student character', 'Character'); it.img = 'cat.png';
     if (step === 9) S.thread.push({ role: 'concept', concept: { id: uid++, item: it, left: 7 } });
     if (step === 10) S.thread.push({ role: 'rig', rig: { stage: 1, item: it } });
     if (step >= 11) { it.rigged = true; S.thread.push({ role: 'result', item: it }); S.lib.unshift(it); }
-    if (step === 12) { AP = { itemId: it.id, sel: 'Idle' }; setTimeout(renderAnim, 0); } }
+    if (step >= 12) { AP = { itemId: it.id, sel: 'Walk', showRig: true, rig: step === 13 ? { step: 1, x: 0, y: 0, z: 0 } : step === 14 ? { step: 2, x: 0, y: 0, z: 0 } : null }; setTimeout(renderAnim, 0); } }
   if (step === 8) { S.thread = []; S.scene = []; const items = [1,2,3,4].map(i => { const it = mk(CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models'); it.name = it.name.replace(/(_[23]D\.\w+)$/, ` ${pad(i)}$1`); if (i === 3) { it.img = 'cat3d-a.png'; it.large = 'cat3d-a.png'; } return it; });
     S.thread = [{ role: 'user', text: CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models' }, { role: 'gallery', gallery: { id: uid++, items, sel: 1 } }]; items.slice().reverse().forEach(it => S.lib.unshift(it)); }
   renderShell(); const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
