@@ -492,6 +492,59 @@
   .cbtn.send.off { cursor: default; }
   .cbtn.send.busy .base { filter: none; }
   .step.doing img { animation: spin 1.2s linear infinite; }
+
+  /* ============================ chat management ============================ */
+  .toast { pointer-events: none; } .toast.show { pointer-events: auto; }
+  .toast .undo { margin-left: 12px; color: var(--brand); cursor: pointer; font-weight: 600; }
+  .chat-menu.sw2 { width: 376px; left: 0; top: 50px; padding: 8px; border-radius: 12px; background: #1e1719; border: 1px solid var(--w08); box-shadow: 0 12px 32px rgba(0,0,0,.5); }
+  .chat-menu.sw2::-webkit-scrollbar { width: 0; }
+  .csearch { height: 28px; padding: 0 8px; border-radius: 8px; background: var(--w08); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .csearch input { flex: 1 0 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 12px/12px var(--font); }
+  .csearch input::placeholder { color: rgba(255,255,255,.4); }
+  .csec { padding: 10px 8px 4px; font: 500 10px/14px var(--font); letter-spacing: .06em; color: var(--w32); display: flex; align-items: center; gap: 6px; }
+  .csec.back { cursor: pointer; color: var(--w65); } .csec.back:hover { color: #fff; }
+  .crow { position: relative; display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border-radius: 8px; cursor: pointer; }
+  .crow:hover { background: var(--w06); } .crow.on { background: var(--w14); } .crow.flash { background: rgba(192,240,0,.1); }
+  .cthumb { width: 36px; height: 36px; flex: none; border-radius: 8px; background: #191718; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .cthumb img { width: 28px; height: 28px; object-fit: contain; }
+  .ctext { flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .ctitle { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .ctitle .nm { font: 500 13px/17px var(--font); color: rgba(255,255,255,.95); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ctitle .badge { flex: none; padding: 1px 4px; font-size: 10px; line-height: 13px; border-radius: 5px; }
+  .ctitle .badge.game { background: var(--w14); color: #fff; }
+  .cmeta { font: 400 11px/15px var(--font); color: rgba(255,255,255,.45); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ccheck { color: var(--brand); font: 500 13px/16px var(--font); }
+  .cmore { width: 24px; height: 24px; flex: none; border-radius: 6px; display: none; align-items: center; justify-content: center; color: #fff; font: 600 9px/9px var(--font); letter-spacing: 1px; cursor: pointer; }
+  .crow:hover .cmore, .crow.menu .cmore { display: flex; background: var(--w14); }
+  .crow:hover .ccheck, .crow.menu .ccheck { display: none; }
+  .crename { flex: 1 0 0; min-width: 0; height: 20px; padding: 0 6px; border-radius: 5px; background: #191718; border: 1px solid var(--brand); color: #fff; font: 500 13px/17px var(--font); outline: 0; }
+  .cfoot { margin-top: 6px; padding: 10px 8px 4px; border-top: 1px solid var(--w08); display: flex; align-items: center; justify-content: space-between; }
+  .cfoot .new { font: 500 13px/16px var(--font); color: rgba(255,255,255,.9); cursor: pointer; } .cfoot .new:hover { color: #fff; }
+  .cfoot .arch { font: 400 12px/16px var(--font); color: rgba(255,255,255,.45); cursor: pointer; } .cfoot .arch:hover { color: #fff; }
+  .cfoot .note { font: 400 11px/15px var(--font); color: rgba(255,255,255,.4); }
+  .crestore { flex: none; padding: 3px 8px; border-radius: 6px; background: var(--w08); color: rgba(255,255,255,.85); font: 500 11px/15px var(--font); cursor: pointer; } .crestore:hover { background: var(--w14); }
+  .cempty { padding: 16px 8px; font: 400 12px/16px var(--font); color: var(--w32); text-align: center; }
+  .rowmenu { position: absolute; right: 6px; top: calc(100% - 2px); z-index: 5; width: 184px; padding: 6px; border-radius: 10px; background: #282023; border: 1px solid rgba(255,255,255,.1); box-shadow: 0 8px 24px rgba(0,0,0,.55); }
+  .rowmenu .mi { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-radius: 6px; font: 400 13px/16px var(--font); color: rgba(255,255,255,.9); cursor: pointer; }
+  .rowmenu .mi:hover { background: var(--w08); } .rowmenu .mi small { color: var(--w32); font-size: 11px; }
+  .rowmenu .mi.danger { color: #ff6b6b; } .rowmenu .sep { height: 1px; margin: 4px 0; background: var(--w08); }
+  .chat-name .draft { margin-left: 6px; padding: 1px 6px; border-radius: 6px; background: var(--w14); color: rgba(255,255,255,.7); font: 500 11px/15px var(--font); }
+  .chat-name span.nmh { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chat-name > img:last-child { margin-left: auto; }
+  .chat-name span.draft { flex: none; }
+  .chat-body.cb > .resume, .chat-body.cb > .draftnote { position: absolute; }
+  .resume { position: absolute; left: 12px; right: 12px; top: 738px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-radius: 8px; background: rgba(192,240,0,.12); font: 500 12px/16px var(--font); color: var(--brand); }
+  .resume span[data-act] { color: rgba(255,255,255,.85); font-weight: 600; cursor: pointer; } .resume span[data-act]:hover { color: #fff; }
+  .draftnote { position: absolute; left: 50%; top: 640px; transform: translateX(-50%); padding: 8px 12px; border-radius: 8px; background: var(--w06); font: 400 12px/16px var(--font); color: rgba(255,255,255,.55); white-space: nowrap; }
+  .libmenu { position: absolute; z-index: 35; width: 300px; padding: 6px; border-radius: 10px; background: #282023; border: 1px solid rgba(255,255,255,.1); box-shadow: 0 8px 24px rgba(0,0,0,.55); }
+  .libmenu .mi { padding: 8px 10px; border-radius: 6px; font: 400 13px/17px var(--font); color: rgba(255,255,255,.92); cursor: pointer; }
+  .libmenu .mi:hover { background: var(--w08); } .libmenu .mi small { display: block; margin-top: 2px; font-size: 11px; line-height: 15px; color: rgba(255,255,255,.4); }
+  .libmenu .mi.off { opacity: .45; pointer-events: none; }
+  .pcard.menu .pthumb { box-shadow: 0 0 0 1.5px var(--brand); }
+  .overlay.cdel { z-index: 46; } .cdlg { position: absolute; left: 740px; top: 430px; z-index: 47; width: 440px; padding: 24px; border-radius: 20px; background: var(--bg); border: 1px solid var(--w08); display: flex; flex-direction: column; gap: 20px; }
+  .cdlg .t { font: 500 16px/22px var(--font); color: #fff; } .cdlg .b { margin-top: 8px; font: 400 13px/20px var(--font); color: rgba(255,255,255,.6); }
+  .cdlg .acts { display: flex; gap: 8px; } .cdlg .acts .btn { flex: 1 0 0; width: auto; }
+  .btn.danger { background: #d94242; border: 0; color: #fff; box-shadow: none; } .btn.danger:hover { background: #e24b4b; }
 </style>
 
 
@@ -724,9 +777,10 @@ function renderPanel() {
   old.replaceWith(tmp.firstElementChild);
   const nb = document.querySelector('#panel .assets-body'); if (nb) nb.scrollTop = scroll;
 }
-function toast(msg) {
+function toast(msg, undo) {
   const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1800);
+  if (undo) { const u = document.createElement('span'); u.className = 'undo'; u.textContent = 'Undo'; u.onclick = () => { undo(); t.classList.remove('show'); }; t.appendChild(u); }
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), undo ? 4000 : 1800);
 }
 
 /* ---------------- generation logic ---------------- */
@@ -961,13 +1015,23 @@ const CATS_B = [
 ];
 const GEN_TITLE = { 'Character': 'Character Generator', '3D Model': '3D Model Generator', '2D & UI': '2D & UI Generator' };
 const PLACEHOLDER = { 'Character': 'Describe the character you want to create...', '3D Model': 'Describe the 3D object you want to create...', '2D & UI': 'Describe the image or UI you want to create...' };
+const HOUR = 3600e3, DAY = 24 * HOUR;
 function bState() {
+  const now = Date.now(); const lib = []; const chats = [];
+  const seed = (id, name, cat, last, prompt, items, opts = {}) => {
+    items.forEach(it => { it.chatId = id; it.short = it.short || name; lib.push(it); });
+    const thread = [{ role: 'user', text: prompt }, items.length > 1 ? { role: 'gallery', gallery: { id: uid++, items, sel: 0 } } : { role: 'result', item: items[0] }];
+    chats.push({ id, name, cat, last, thread, pinned: !!opts.pinned, archived: !!opts.archived });
+  };
+  seed('c-puppy', 'Puppy models', '3D Model', now - 2 * HOUR, 'Create 4 puppy models', [1, 2, 3, 4].map(i => ({ id: uid++, name: `Puppy model 0${i}_3D.glb`, short: 'Puppy model', img: 'dog.png', large: 'dog-large.png', kind: '3D', cat: '3D Model' })), { pinned: true });
+  seed('c-cat', 'Cat student', 'Character', now - 26 * HOUR, 'Create a cat student character', [{ id: uid++, name: 'Cat student_3D.glb', short: 'Cat student', img: 'cat.png', large: 'cat-turn.webp', kind: '3D', cat: 'Character', rigged: true }]);
+  seed('c-sticker', 'Puppy stickers', '2D & UI', now - 4 * DAY, 'Create 2 puppy stickers', [1, 2].map(i => ({ id: uid++, name: `Puppy sticker 0${i}_2D.png`, short: 'Puppy sticker', img: `puppy${i}.png`, large: `puppy${i}.png`, kind: '2D', cat: '2D & UI' })));
+  seed('c-catmodel', 'Cat model', '3D Model', now - 6 * DAY, 'Create a cat model', [{ id: uid++, name: 'Cat model_3D.glb', short: 'Cat model', img: 'cat3d-a.png', large: 'cat3d-a.png', kind: '3D', cat: '3D Model' }]);
+  seed('c-coin', 'Coin icons', '2D & UI', now - 45 * DAY, 'Create coin icons', [{ id: uid++, name: 'Coin icon_2D.png', short: 'Coin icon', img: 'coin.png', large: 'coin.png', kind: '2D', cat: '2D & UI' }], { archived: true });
+  seed('c-tiles', 'Platform tiles', '3D Model', now - 50 * DAY, 'Create platform tiles', [{ id: uid++, name: 'Platform tile_3D.glb', short: 'Platform tile', img: 'dog.png', large: 'dog-large.png', kind: '3D', cat: '3D Model' }], { archived: true });
   return { plan: 'B', cat: null, chat: 'game', menu: false, thread: [], chatNo: 0,
-    lib: [
-      ...[1, 2, 3, 4].map(i => ({ id: uid++, name: `Puppy model 0${i}`, img: 'dog.png', large: 'dog-large.png', kind: '3D', cat: '3D Model' })),
-      ...[1, 2].map(i => ({ id: uid++, name: `Puppy sticker 0${i}`, img: `puppy${i}.png`, large: `puppy${i}.png`, kind: '2D', cat: '2D & UI' })),
-      { id: uid++, name: 'Cat student', img: 'cat.png', large: 'cat-turn.webp', kind: '3D', cat: 'Character' },
-    ] };
+    chats, activeChat: null, chatView: 'list', chatQuery: '', menuRow: null, renaming: null, confirmDel: null, libMenu: null, resumed: null,
+    lib: lib.filter(it => !chats.find(c => c.id === it.chatId).archived) };
 }
 Object.assign(S, bState());
 
@@ -1037,18 +1101,108 @@ const userB = (m) => `<div class="user-msg"><div class="bubble">${esc(m.text)}</
 const assetsThread = () => S.thread.length
   ? `<div class="thread" id="thread">${S.thread.map(m => m.role === 'user' ? userB(m) : m.role === 'thinking' ? thinkingB() : m.role === 'gallery' ? galleryB(m.gallery) : m.role === 'concept' ? conceptB(m.concept) : m.role === 'rig' ? rigB(m.rig) : resultB(m.item)).join('')}</div>`
   : `<div class="cb-empty">${I(S.cat === 'Character' ? 'empty-char.webp' : S.cat === '2D & UI' ? 'empty-2d.webp' : 'empty-3d.webp',180,180)}<p class="t">${S.cat === 'Character' ? 'Character' : S.cat === '2D & UI' ? '2D & UI' : '3D Model'}</p><p class="s">Create with images and context.</p></div>`;
-const chatMenu = () => `<div class="chat-menu" id="chatmenu">
-    <p class="g">Game</p><div class="it${S.chat==='game'?' on':''}" data-act="chatpick" data-v="game"><span>Game creating</span><small>Wana · plan &amp; build</small></div>
-    <p class="g">Assets</p><div class="it${S.chat==='assets'?' on':''}" data-act="chatpick" data-v="assets"><span>Create Assets ${pad(Math.max(1, S.chatNo))}</span><small>${S.thread.filter(m => m.role === 'result').length} results</small></div>
-    <div class="it" data-act="newchat"><span>＋ New assets chat</span></div></div>`;
+/* ---------------- chat management ---------------- */
+const chatById = (id) => S.chats.find(c => c.id === id);
+const hasUser = (c) => c.thread.some(m => m.role === 'user');
+const chatItems = (c) => c.thread.flatMap(m => m.gallery ? m.gallery.items : m.item ? [m.item] : m.concept ? [m.concept.item] : m.rig ? [m.rig.item] : []);
+const rel = (ms) => { const d = Date.now() - ms; if (d < 60e3) return 'just now'; if (d < HOUR) return `${Math.round(d / 60e3)} min ago`; if (d < DAY) return `${Math.round(d / HOUR)} h ago`; if (d < 2 * DAY) return 'yesterday'; const t = new Date(ms); return t.toLocaleString('en-US', { month: 'short' }) + ' ' + pad(t.getDate()); };
+function syncActive() {
+  if (S.chat !== 'assets') return null;
+  let c = chatById(S.activeChat);
+  if (!c) { c = { id: 'c' + (uid++), name: null, cat: S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model', last: Date.now(), thread: S.thread, pinned: false, archived: false }; S.chats.push(c); S.activeChat = c.id; }
+  c.thread = S.thread;
+  if (!c.name) { const u = S.thread.find(m => m.role === 'user'); if (u) c.name = assetName(u.text); }
+  return c;
+}
+function discardDraft(keepId) { const c = chatById(S.activeChat); if (c && c.id !== keepId && !hasUser(c)) S.chats = S.chats.filter(x => x !== c); }
+function openChat(id) {
+  syncActive(); discardDraft(id);
+  const c = chatById(id); if (!c) return;
+  S.chat = 'assets'; S.activeChat = id; S.thread = c.thread; if (c.cat) S.cat = c.cat;
+  S.menu = false; S.menuRow = null; S.renaming = null; S.resumed = null; S.chatView = 'list';
+  renderPanel(); renderChat();
+}
+function newChat(cat) {
+  syncActive(); discardDraft();
+  const c = { id: 'c' + (uid++), name: null, cat: cat || (S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model'), last: Date.now(), thread: [], pinned: false, archived: false };
+  S.chats.push(c); S.chat = 'assets'; S.activeChat = c.id; S.thread = c.thread; S.cat = c.cat;
+  S.menu = false; S.menuRow = null; S.renaming = null; S.resumed = null; S.chatView = 'list';
+  renderPanel(); renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus();
+}
+function goGame() { syncActive(); discardDraft(); S.chat = 'game'; S.menu = false; S.menuRow = null; S.resumed = null; renderChat(); }
+const catBadge = (cat) => cat === '2D & UI' ? '<span class="badge d2">2D</span>' : '<span class="badge d3">3D</span>';
+const chatRow = (c, archived) => {
+  const items = chatItems(c); const thumb = items[0]; const n = items.length;
+  const active = S.chat === 'assets' && S.activeChat === c.id;
+  const rigged = items.some(i => i.rigged);
+  const meta = `${n} asset${n === 1 ? '' : 's'}${rigged ? ' · Rigged' : ''} · ${rel(c.last)}`;
+  const nameHtml = S.renaming === c.id ? `<input class="crename" id="crename" value="${esc(c.name || '')}" data-id="${c.id}" aria-label="Rename chat">` : `<span class="nm">${esc(c.name || 'New chat')}</span>`;
+  return `<div class="crow${active ? ' on' : ''}${S.menuRow === c.id ? ' menu' : ''}${c.flash ? ' flash' : ''}" data-act="${archived ? 'cnoop' : 'copen'}" data-v="${c.id}">
+    <div class="cthumb">${thumb ? I(thumb.img, 28, 28) : ''}</div>
+    <div class="ctext"><div class="ctitle">${nameHtml}${catBadge(c.cat)}</div><div class="cmeta">${S.renaming === c.id ? 'Enter to save · Esc to cancel' : meta}</div></div>
+    ${archived ? `<span class="crestore" data-act="crestore" data-v="${c.id}">Restore</span>` : `${active ? '<span class="ccheck">✓</span>' : ''}<span class="cmore" data-act="cmore" data-v="${c.id}" title="More">•••</span>`}
+    ${S.menuRow === c.id ? `<div class="rowmenu">
+      <div class="mi" data-act="crename" data-v="${c.id}"><span>Rename</span><small>F2</small></div>
+      <div class="mi" data-act="cpin" data-v="${c.id}"><span>${c.pinned ? 'Unpin' : 'Pin to top'}</span></div>
+      <div class="mi" data-act="carchive" data-v="${c.id}"><span>Archive</span></div>
+      <div class="sep"></div>
+      <div class="mi danger" data-act="cdelete" data-v="${c.id}"><span>Delete chat</span></div></div>` : ''}
+  </div>`;
+};
+const chatMenu = () => {
+  const q = (S.chatQuery || '').toLowerCase(); const match = (c) => !q || (c.name || '').toLowerCase().includes(q);
+  const saved = S.chats.filter(c => hasUser(c) && match(c));
+  const byLast = (a, b) => b.last - a.last;
+  const search = `<div class="csearch">${I('search.svg',12,12)}<input id="chatSearch" placeholder="Search chats" value="${esc(S.chatQuery || '')}" autocomplete="off"></div>`;
+  if (S.chatView === 'archived') {
+    const arch = saved.filter(c => c.archived).sort(byLast);
+    return `<div class="chat-menu sw2" id="chatmenu">${search}
+      <div class="csec back" data-act="cview" data-v="list">‹ ARCHIVED · auto after 30 days inactive</div>
+      ${arch.map(c => chatRow(c, true)).join('') || '<p class="cempty">No archived chats</p>'}
+      <div class="cfoot"><span class="note">Archived chats keep their assets in the library</span></div></div>`;
+  }
+  const live = saved.filter(c => !c.archived); const pinned = live.filter(c => c.pinned).sort(byLast); const recent = live.filter(c => !c.pinned).sort(byLast);
+  const gameMatch = !q || 'jump jump game'.includes(q);
+  return `<div class="chat-menu sw2" id="chatmenu">${search}
+    ${gameMatch ? `<div class="csec">GAME</div><div class="crow${S.chat === 'game' ? ' on' : ''}" data-act="cgame"><div class="cthumb">${I('mascot.png',28,30)}</div><div class="ctext"><div class="ctitle"><span class="nm">Jump Jump game</span><span class="badge game">Game</span></div><div class="cmeta">Plan &amp; build with Wana · 12 min ago</div></div>${S.chat === 'game' ? '<span class="ccheck">✓</span>' : ''}</div>` : ''}
+    ${pinned.length ? `<div class="csec">PINNED</div>${pinned.map(c => chatRow(c)).join('')}` : ''}
+    ${recent.length ? `<div class="csec">RECENT</div>${recent.map(c => chatRow(c)).join('')}` : ''}
+    ${!gameMatch && !pinned.length && !recent.length ? `<p class="cempty">No chats match “${esc(S.chatQuery)}”</p>` : ''}
+    <div class="cfoot"><span class="new" data-act="newchat">+&nbsp; New assets chat</span><span class="arch" data-act="cview" data-v="archived">Archived (${S.chats.filter(c => c.archived && hasUser(c)).length}) ›</span></div></div>`;
+};
+function renderDel() {
+  stage.querySelectorAll('.overlay.cdel, .cdlg').forEach(n => n.remove()); if (!S.confirmDel) return;
+  const c = chatById(S.confirmDel); if (!c) { S.confirmDel = null; return; }
+  const n = chatItems(c).length;
+  stage.insertAdjacentHTML('beforeend', `<div class="overlay anim cdel" data-act="cdelcancel"></div><div class="cdlg" role="dialog" aria-label="Delete chat">
+    <div><p class="t">Delete “${esc(c.name || 'New chat')}”?</p><p class="b">The conversation and its history will be removed. The ${n} asset${n === 1 ? '' : 's'} it created stay in your library and in any scene that uses them.</p></div>
+    <div class="acts"><div class="btn grey" data-act="cdelcancel">Cancel</div><div class="btn danger" data-act="cdelok" data-v="${c.id}">Delete chat</div></div></div>`);
+}
+function renderLibMenu() {
+  stage.querySelectorAll('.libmenu').forEach(n => n.remove());
+  document.querySelectorAll('.pcard.menu').forEach(n => n.classList.remove('menu'));
+  if (!S.libMenu) return;
+  const it = S.lib.find(i => i.id === S.libMenu); const card = document.querySelector(`.pcard[data-v="${S.libMenu}"]`); if (!it || !card) { S.libMenu = null; return; }
+  card.classList.add('menu');
+  const sr = stage.getBoundingClientRect(), cr = card.getBoundingClientRect();
+  const x = (cr.right - sr.left) / K + 10, y = (cr.top - sr.top) / K;
+  const c = chatById(it.chatId); const ok = c && hasUser(c);
+  stage.insertAdjacentHTML('beforeend', `<div class="libmenu" style="left:${x}px;top:${y}px">
+    <div class="mi" data-act="lmadd" data-v="${it.id}">Add to scene</div>
+    <div class="mi${ok ? '' : ' off'}" data-act="lmchat" data-v="${it.id}">Continue in chat<small>${ok ? `Opens “${esc(c.name)}”${c.archived ? ' · restores it from Archived' : ''} · makes more in this style` : 'The chat that made this was deleted'}</small></div>
+    <div class="mi" data-act="lmdl" data-v="${it.id}">Download</div></div>`);
+}
 const chat = () => {
   const assets = S.chat === 'assets';
-  const name = assets ? `Create Assets ${pad(Math.max(1, S.chatNo))}` : 'Game creating';
+  const ac = assets ? syncActive() : null;
+  const name = assets ? `<span class="nmh">${esc(ac && ac.name ? ac.name : 'New chat')}</span>${ac && !hasUser(ac) ? '<span class="draft">Draft</span>' : ''}` : '<span class="nmh">Game creating</span>';
   const ph = assets ? (PLACEHOLDER[S.cat] || PLACEHOLDER['3D Model']) : 'Ask, plan, build anything...';
   return `<div id="chatroot">
-  <div class="chat-head cb"><div class="chat-name" data-act="chatmenu"><span>${name}</span>${I('chevron-down.svg',16,16)}</div><div class="chat-plus" data-act="newchat" title="New chat">${I('plus.svg',12,12)}</div>${S.menu ? chatMenu() : ''}</div>
+  <div class="chat-head cb"><div class="chat-name" data-act="chatmenu">${name}${I('chevron-down.svg',16,16)}</div><div class="chat-plus" data-act="newchat" title="New chat">${I('plus.svg',12,12)}</div>${S.menu ? chatMenu() : ''}</div>
   <div class="chat-body cb">
     ${assets ? assetsThread() : gameThread()}
+    ${assets && ac && !hasUser(ac) ? '<p class="draftnote">Not saved until you send the first message</p>' : ''}
+    ${assets && ac && S.resumed === ac.id ? `<div class="resume"><span>Continuing “${esc(ac.name)}” · last used ${rel(ac.last)}</span><span data-act="newchat">New chat</span></div>` : ''}
     <div class="composer-area">
       <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg',6,6)}</div></div>
       <div class="composer">
@@ -1066,8 +1220,11 @@ const chat = () => {
 function renderChat() {
   const old = document.getElementById('chatroot'); if (!old) return;
   const keep = document.getElementById('cbInput'); const val = keep ? keep.value : '';
+  const sq = document.getElementById('chatSearch'); const hadSearchFocus = sq && document.activeElement === sq; const caret = sq ? sq.selectionStart : 0;
   const tmp = document.createElement('div'); tmp.innerHTML = chat(); old.replaceWith(tmp.firstElementChild);
   const ta = document.getElementById('cbInput'); if (ta) { ta.value = val; syncSend(); }
+  if (hadSearchFocus) { const s2 = document.getElementById('chatSearch'); if (s2) { s2.focus(); s2.setSelectionRange(caret, caret); } }
+  const rn = document.getElementById('crename'); if (rn) { rn.focus(); rn.select(); }
   const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
 }
 function syncSend() { const ta = document.getElementById('cbInput'); const b = document.getElementById('sendBtn'); if (ta && b) b.classList.toggle('off', !S.busy && !ta.value.trim()); }
@@ -1082,9 +1239,11 @@ function assetName(text) {
 function sendB(textOverride) {
   const ta = document.getElementById('cbInput'); const text = (textOverride != null ? textOverride : (ta ? ta.value : '')).trim();
   if (!text || S.busy) return;
-  if (S.chat !== 'assets') { S.chat = 'assets'; S.chatNo = Math.max(1, S.chatNo); }
+  if (S.chat !== 'assets') { S.chat = 'assets'; S.activeChat = null; S.thread = []; }
   if (ta) ta.value = '';
-  S.thread.push({ role: 'user', text }); S.thread.push({ role: 'thinking' }); S.busy = true; renderChat();
+  S.thread.push({ role: 'user', text }); S.thread.push({ role: 'thinking' }); S.busy = true;
+  { const c = syncActive(); c.last = Date.now(); if (c.archived) c.archived = false; S.resumed = null; }
+  renderChat();
   const cat = S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model';
   if (cat === 'Character') { startCharacter(text); return; }
   const n = Math.min(4, Math.max(1, S.variants || countFromText(text)));
@@ -1093,14 +1252,15 @@ function sendB(textOverride) {
     S.thread = S.thread.filter(m => m.role !== 'thinking');
     if (n === 1) { const item = items[0]; item.fresh = true; S.thread.push({ role: 'result', item }); }
     else { S.thread.push({ role: 'gallery', gallery: { id: uid++, items, sel: 0, fresh: true } }); }
-    items.slice().reverse().forEach(it => S.lib.unshift(it)); S.busy = false; S.variants = 1;
+    items.slice().reverse().forEach(it => S.lib.unshift(it)); S.busy = false; S.variants = 1; { const c = chatById(S.activeChat); if (c) c.last = Date.now(); }
     renderChat(); renderPanel(); items.forEach(it => { it.fresh = false; }); S.thread.forEach(m => { if (m.gallery) m.gallery.fresh = false; });
     toast(n === 1 ? `${items[0].name} is ready · added to your library` : `${n} variants ready · all added to your library`);
   }, 3200);
 }
 let puppyN = 0;
 function countFromText(text) { const m = text.match(/\b(2|3|4|two|three|four)\b/i); if (!m) return 1; return ({ two: 2, three: 3, four: 4 })[m[1].toLowerCase()] || parseInt(m[1], 10); }
-function makeItem(text, cat) {
+function makeItem(text, cat) { const it = makeItem0(text, cat); it.chatId = S.activeChat; return it; }
+function makeItem0(text, cat) {
   const short = assetName(text); const isCat = /\b(cat|kitten|kitty)\b/i.test(text);
   if (cat === '2D & UI') { const p = `puppy${(puppyN++ % 4) + 1}.png`; return { id: uid++, name: `${short}_2D.png`, short, img: isCat ? 'cat3d-a.png' : p, large: isCat ? 'cat3d-a.png' : p, kind: '2D', cat }; }
   if (cat === 'Character') return { id: uid++, name: `${short}_3D.glb`, short, img: 'cat.png', large: 'cat-turn.webp', kind: '3D', cat };
@@ -1182,11 +1342,36 @@ stage.addEventListener('click', (e) => {
   const el = e.target.closest('[data-act]'); if (!el || !stage.contains(el)) return;
   const act = el.dataset.act, v = el.dataset.v;
   switch (act) {
-    case 'catb': S.cat = S.cat === v ? null : v; renderPanel(); if (S.chat === 'assets' && !S.thread.length) renderChat(); break;
-    case 'gennow': if (!S.cat) S.cat = '3D Model'; if (!S.chatNo) S.chatNo = 1; openAssetsChat(); toast(`Create Assets ${pad(S.chatNo)} opened · describe what you need`); break;
-    case 'chatmenu': S.menu = !S.menu; renderChat(); break;
-    case 'chatpick': S.chat = v; S.menu = false; if (v === 'assets' && !S.chatNo) S.chatNo = 1; renderChat(); break;
-    case 'newchat': S.chat = 'assets'; S.chatNo += 1; S.thread = []; S.menu = false; renderChat(); toast(`Create Assets ${pad(S.chatNo)} started`); break;
+    case 'catb': S.cat = S.cat === v ? null : v; S.libMenu = null; renderLibMenu(); renderPanel(); if (S.chat === 'assets' && !S.thread.length) { const c = chatById(S.activeChat); if (c && S.cat && GEN_TITLE[S.cat]) c.cat = S.cat; renderChat(); } break;
+    case 'gennow': {
+      const cat = S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model'; S.cat = cat;
+      const cur = S.chat === 'assets' ? chatById(S.activeChat) : null;
+      if (cur && cur.cat === cat) { S.menu = false; renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus(); break; }
+      const latest = S.chats.filter(c => !c.archived && c.cat === cat && hasUser(c)).sort((a, b) => b.last - a.last)[0];
+      if (latest) { openChat(latest.id); S.resumed = latest.id; renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus(); }
+      else newChat(cat);
+      break; }
+    case 'chatmenu': S.menu = !S.menu; S.menuRow = null; S.renaming = null; S.chatView = 'list'; S.chatQuery = ''; renderChat(); break;
+    case 'cgame': goGame(); break;
+    case 'copen': if (S.renaming === v) break; openChat(v); break;
+    case 'cnoop': break;
+    case 'newchat': newChat(S.cat && GEN_TITLE[S.cat] ? S.cat : null); break;
+    case 'cview': S.chatView = v; S.menuRow = null; renderChat(); break;
+    case 'cmore': S.menuRow = S.menuRow === v ? null : v; renderChat(); break;
+    case 'crename': S.menuRow = null; S.renaming = v; renderChat(); break;
+    case 'cpin': { const c = chatById(v); if (!c) break; c.pinned = !c.pinned; c.flash = true; S.menuRow = null; renderChat(); setTimeout(() => { c.flash = false; if (S.menu) renderChat(); }, 1200);
+      toast(`${c.pinned ? 'Pinned' : 'Unpinned'} “${c.name}”`, () => { c.pinned = !c.pinned; renderChat(); }); break; }
+    case 'carchive': { const c = chatById(v); if (!c) break; c.archived = true; S.menuRow = null; if (S.chat === 'assets' && S.activeChat === c.id) { S.chat = 'game'; }
+      renderChat(); toast(`Archived “${c.name}”`, () => { c.archived = false; renderChat(); }); break; }
+    case 'crestore': { const c = chatById(v); if (!c) break; c.archived = false; c.last = Date.now(); S.chatView = 'list'; c.flash = true; renderChat(); setTimeout(() => { c.flash = false; if (S.menu) renderChat(); }, 1200); toast(`Restored “${c.name}”`); break; }
+    case 'cdelete': S.menuRow = null; S.confirmDel = v; renderChat(); renderDel(); break;
+    case 'cdelcancel': S.confirmDel = null; renderDel(); break;
+    case 'cdelok': { const c = chatById(v); if (!c) break; S.chats = S.chats.filter(x => x !== c); S.lib.forEach(it => { if (it.chatId === c.id) it.chatId = null; });
+      if (S.chat === 'assets' && S.activeChat === c.id) { S.chat = 'game'; S.activeChat = null; }
+      S.confirmDel = null; renderDel(); renderChat(); toast(`Deleted “${c.name}” · assets kept in your library`); break; }
+    case 'lmadd': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
+    case 'lmdl': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); toast(`Downloading ${it ? it.name : 'asset'}…`); break; }
+    case 'lmchat': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); const c = it && chatById(it.chatId); if (c) { c.archived = false; openChat(c.id); S.resumed = c.id; renderChat(); toast(`Opened “${c.name}” · describe what else you need in this style`); } break; }
     case 'send': sendB(); break;
     case 'cregen': regenConcept(+v); break;
     case 'ccontinue': continueTo3D(+v, false); break;
@@ -1210,7 +1395,7 @@ stage.addEventListener('click', (e) => {
     case 'rto3d': { const it = S.lib.find(i => i.id === +v); if (it) { S.cat = '3D Model'; renderPanel(); sendB(`Create a 3D model of ${it.short.toLowerCase()}`); } break; }
     case 'ranim': { const it = S.lib.find(i => i.id === +v); if (it && (it.rigged || it.cat === 'Character')) { AP = { itemId: it.id, sel: (it.anim || 'Idle') + '#Basic0', showRig: false, rig: null }; renderAnim(); } else toast(`${it ? it.short || it.name : 'This model'} needs rigging first · use Create Character`); break; }
     case 'raddscene': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
-    case 'libcard': { const it = S.lib.find(i => i.id === +v); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
+    case 'libcard': S.libMenu = S.libMenu === +v ? null : +v; renderLibMenu(); break;
   }
 });
 function placeB(it) {
@@ -1220,7 +1405,19 @@ function placeB(it) {
 }
 stage.addEventListener('input', (e) => { if (e.target.id === 'cbInput') syncSend(); });
 stage.addEventListener('keydown', (e) => { if (e.target.id === 'cbInput' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendB(); } });
-document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closest('.chat-head')) { S.menu = false; renderChat(); } }, true);
+document.addEventListener('pointerdown', (e) => {
+  if (S.menu && !e.target.closest('.chat-head') && !e.target.closest('.cdlg') && !e.target.closest('.toast')) { S.menu = false; S.menuRow = null; S.renaming = null; renderChat(); }
+  else if (S.menuRow && !e.target.closest('.crow')) { S.menuRow = null; renderChat(); }
+  if (S.libMenu && !e.target.closest('.libmenu') && !e.target.closest('.pcard')) { S.libMenu = null; renderLibMenu(); }
+}, true);
+stage.addEventListener('input', (e) => { if (e.target.id === 'chatSearch') { S.chatQuery = e.target.value; S.menuRow = null; renderChat(); } });
+function commitRename(input) { const c = chatById(input.dataset.id); const v = input.value.trim(); if (c && v) c.name = v; S.renaming = null; renderChat(); }
+stage.addEventListener('keydown', (e) => {
+  if (e.target.id === 'crename') { if (e.key === 'Enter') { e.preventDefault(); commitRename(e.target); } if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); S.renaming = null; renderChat(); } return; }
+  if (e.key === 'F2' && S.menu && S.menuRow) { e.preventDefault(); S.renaming = S.menuRow; S.menuRow = null; renderChat(); }
+  if (e.key === 'Escape' && S.menu) { S.menu = false; S.menuRow = null; renderChat(); }
+});
+stage.addEventListener('focusout', (e) => { if (e.target.id === 'crename' && S.renaming && e.target.isConnected && !e.relatedTarget?.closest?.('.rowmenu')) setTimeout(() => { if (!e.target.isConnected || !S.renaming) return; const el = document.getElementById('crename'); if (el && el === e.target && document.activeElement !== el) commitRename(el); }, 0); });
 
 /* ---------- URL hooks for review: ?step=1..7 reproduces the Figma flow frames ---------- */
 (function () {
@@ -1230,13 +1427,13 @@ document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closes
   const P = CATQ === '2D & UI' ? ['Create a puppy sticker', 'Create a cat sticker like this'] : CATQ === 'Character' ? ['Create a cat student character', 'Create a cat teacher like this'] : ['Create a puppy model', 'Create a cat model like this'];
   const mk = (text) => makeItem(text, CATQ);
   if (step >= 2) S.cat = CATQ;
-  if (step >= 3) { S.chat = 'assets'; S.chatNo = 1; }
+  if (step >= 3) { S.chat = 'assets'; S.activeChat = null; }
   if (step === 4) { S.thread = [{ role: 'user', text: P[0] }, { role: 'thinking' }]; S.busy = true; }
   let first = null;
   if (step >= 5) { first = mk(P[0]); S.thread = [{ role: 'user', text: P[0] }, { role: 'result', item: first }]; S.lib.unshift(first); }
   if (step >= 6) { const b = mk(P[1]); S.thread.push({ role: 'user', text: P[1] }, { role: 'result', item: b }); S.lib.unshift(b); }
   if (step >= 7 && first) { placeB(first); S.selected = null; }
-  if (step >= 9 && step <= 14) { S.cat = 'Character'; S.chat = 'assets'; S.chatNo = 1; S.thread = [{ role: 'user', text: 'Create a cat student character' }]; const it = makeItem('Create a cat student character', 'Character'); it.img = 'cat.png';
+  if (step >= 9 && step <= 14) { S.cat = 'Character'; S.chat = 'assets'; S.activeChat = null; S.thread = [{ role: 'user', text: 'Create a cat student character' }]; const it = makeItem('Create a cat student character', 'Character'); it.img = 'cat.png';
     if (step === 9) S.thread.push({ role: 'concept', concept: { id: uid++, item: it, left: 7 } });
     if (step === 10) S.thread.push({ role: 'rig', rig: { stage: 1, item: it } });
     if (step >= 11) { it.rigged = true; S.thread.push({ role: 'result', item: it }); S.lib.unshift(it); }
@@ -1244,6 +1441,21 @@ document.addEventListener('pointerdown', (e) => { if (S.menu && !e.target.closes
   if (step === 8) { S.thread = []; S.scene = []; const items = [1,2,3,4].map(i => { const it = mk(CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models'); it.name = it.name.replace(/(_[23]D\.\w+)$/, ` ${pad(i)}$1`); if (i === 3) { it.img = 'cat3d-a.png'; it.large = 'cat3d-a.png'; } return it; });
     S.thread = [{ role: 'user', text: CATQ === '2D & UI' ? 'Create 4 puppy stickers' : 'Create 4 puppy models' }, { role: 'gallery', gallery: { id: uid++, items, sel: 1 } }]; items.slice().reverse().forEach(it => S.lib.unshift(it)); }
   renderShell(); const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
+})();
+/* ---------- URL hooks for chat management: ?chats=menu|rowmenu|rename|archived|delete|lib|resume|draft ---------- */
+(function () {
+  const v = new URLSearchParams(location.search).get('chats'); if (!v) return;
+  renderShell(); fit();
+  if (v === 'resume') { S.cat = '3D Model'; renderPanel(); openChat('c-puppy'); S.resumed = 'c-puppy'; renderChat(); return; }
+  if (v === 'draft') { S.cat = '3D Model'; newChat('3D Model'); return; }
+  openChat('c-puppy');
+  if (v === 'lib') { S.menu = false; renderChat(); S.cat = null; renderPanel(); S.libMenu = S.lib.find(i => i.chatId === 'c-puppy').id; setTimeout(renderLibMenu, 50); return; }
+  S.menu = true;
+  if (v === 'rowmenu') S.menuRow = 'c-cat';
+  if (v === 'rename') S.renaming = 'c-cat';
+  if (v === 'archived') S.chatView = 'archived';
+  renderChat();
+  if (v === 'delete') { S.menu = false; S.confirmDel = 'c-cat'; renderChat(); renderDel(); }
 })();
 
 renderShell(); fit();

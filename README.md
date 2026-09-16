@@ -36,6 +36,18 @@ No build step, no dependencies. Fonts (Poppins, Bitcount Grid Single) load from 
 - `?detail=1` — open the first result's detail after generation
 - `?add=1` — place the first result into the scene after generation
 
+### Asset chat management (Plan B)
+
+- **Reuse by default**: Generate now reopens the most recent chat for the selected category and shows a “Continuing …” bar with a New chat shortcut. New chats come from + or “New assets chat”.
+- **Drafts**: a new chat shows a Draft tag and is discarded if you leave before sending the first message.
+- **Auto name** from the first prompt; rename inline from the row menu (F2, Enter to save, Esc to cancel).
+- **Switcher**: search, Game chat on top, Pinned, Recent (by last activity); rows show first-result thumbnail, category badge, asset count, last activity.
+- **Row menu**: Rename · Pin to top / Unpin · Archive · Delete chat. Pin and archive toasts include Undo. Delete asks for confirmation and keeps the chat's assets in the library.
+- **Archived** view with Restore.
+- **Library card menu**: Add to scene · Continue in chat (reopens the chat that made the asset; disabled if that chat was deleted) · Download.
+
+Review states: `plan-b.html?chats=menu|rowmenu|rename|archived|delete|lib|resume|draft`
+
 ## Layout
 
 - `index.html` — page + styles + logic (`renderShell`, `renderPanel`, `generate`, `renderModal`)
