@@ -38,7 +38,7 @@ No build step, no dependencies. Fonts (Poppins, Bitcount Grid Single) load from 
 
 ### Asset chat management (Plan B)
 
-- **Reuse by default**: Generate now reopens the most recent chat for the selected category and shows a “Continuing …” bar with a New chat shortcut. New chats come from + or “New assets chat”.
+- **Reuse by default**: Generate now jumps to the chat of that category the user opened most recently, and a small card asks “Continue in …?” with **Continue here** / **Start a new chat**. Sending a message also counts as continuing. If the user is already in that chat, no card is shown.
 - **Drafts**: a new chat shows a Draft tag and is discarded if you leave before sending the first message.
 - **Auto name** from the first prompt; rename inline from the row menu (F2, Enter to save, Esc to cancel).
 - **Switcher**: search, Game chat on top, Pinned, Recent (by last activity); rows show first-result thumbnail, category badge, asset count, last activity.

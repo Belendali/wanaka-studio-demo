@@ -533,8 +533,17 @@
   .chat-name > img:last-child { margin-left: auto; }
   .chat-name span.draft { flex: none; }
   .chat-body.cb > .resume, .chat-body.cb > .draftnote { position: absolute; }
-  .resume { position: absolute; left: 12px; right: 12px; top: 738px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-radius: 8px; background: rgba(192,240,0,.12); font: 500 12px/16px var(--font); color: var(--brand); }
-  .resume span[data-act] { color: rgba(255,255,255,.85); font-weight: 600; cursor: pointer; } .resume span[data-act]:hover { color: #fff; }
+  .resume { position: absolute; left: 12px; right: 12px; top: 676px; z-index: 3; padding: 12px; border-radius: 12px; background: #221b1d; border: 1px solid rgba(192,240,0,.35); box-shadow: 0 10px 28px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 12px; animation: rs-in .28s cubic-bezier(.2,.8,.2,1) both; }
+  .rs-top { display: flex; gap: 10px; align-items: center; } .rs-th { width: 36px; height: 36px; flex: none; border-radius: 8px; background: #191718; display: flex; align-items: center; justify-content: center; }
+  .rs-th img { width: 28px; height: 28px; object-fit: contain; } .rs-tx { min-width: 0; }
+  .rs-q { font: 500 14px/19px var(--font); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .rs-m { font: 400 12px/16px var(--font); color: rgba(255,255,255,.5); margin-top: 2px; }
+  .rs-acts { display: flex; gap: 8px; } .rs-btn { flex: 1 0 0; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font: 600 13px/16px var(--font); cursor: pointer; }
+  .rs-btn.ghost { background: #3a3536; border: 1px solid #423f3f; color: #fff; } .rs-btn.ghost:hover { background: #443e40; }
+  .rs-btn.main { background: #fff; color: var(--ink); } .rs-btn.main:hover { background: #f1f1f1; }
+  @keyframes rs-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .chat-body.cb.switched .thread, .chat-body.cb.switched .cb-empty { animation: chat-in .32s ease-out both; }
+  @keyframes chat-in { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .resume, .chat-body.cb.switched .thread, .chat-body.cb.switched .cb-empty { animation: none; } }
   .draftnote { position: absolute; left: 50%; top: 640px; transform: translateX(-50%); padding: 8px 12px; border-radius: 8px; background: var(--w06); font: 400 12px/16px var(--font); color: rgba(255,255,255,.55); white-space: nowrap; }
   .libmenu { position: absolute; z-index: 35; width: 300px; padding: 6px; border-radius: 10px; background: #282023; border: 1px solid rgba(255,255,255,.1); box-shadow: 0 8px 24px rgba(0,0,0,.55); }
   .libmenu .mi { padding: 8px 10px; border-radius: 6px; font: 400 13px/17px var(--font); color: rgba(255,255,255,.92); cursor: pointer; }
@@ -1118,13 +1127,14 @@ function discardDraft(keepId) { const c = chatById(S.activeChat); if (c && c.id 
 function openChat(id) {
   syncActive(); discardDraft(id);
   const c = chatById(id); if (!c) return;
-  S.chat = 'assets'; S.activeChat = id; S.thread = c.thread; if (c.cat) S.cat = c.cat;
+  S.chat = 'assets'; S.activeChat = id; S.thread = c.thread; if (c.cat) S.cat = c.cat; c.opened = Date.now(); S.switched = true;
   S.menu = false; S.menuRow = null; S.renaming = null; S.resumed = null; S.chatView = 'list';
   renderPanel(); renderChat();
 }
 function newChat(cat) {
   syncActive(); discardDraft();
   const c = { id: 'c' + (uid++), name: null, cat: cat || (S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model'), last: Date.now(), thread: [], pinned: false, archived: false };
+  c.opened = Date.now(); S.switched = true;
   S.chats.push(c); S.chat = 'assets'; S.activeChat = c.id; S.thread = c.thread; S.cat = c.cat;
   S.menu = false; S.menuRow = null; S.renaming = null; S.resumed = null; S.chatView = 'list';
   renderPanel(); renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus();
@@ -1199,10 +1209,12 @@ const chat = () => {
   const ph = assets ? (PLACEHOLDER[S.cat] || PLACEHOLDER['3D Model']) : 'Ask, plan, build anything...';
   return `<div id="chatroot">
   <div class="chat-head cb"><div class="chat-name" data-act="chatmenu">${name}${I('chevron-down.svg',16,16)}</div><div class="chat-plus" data-act="newchat" title="New chat">${I('plus.svg',12,12)}</div>${S.menu ? chatMenu() : ''}</div>
-  <div class="chat-body cb">
-    ${assets ? assetsThread() : gameThread()}
+  <div class="chat-body cb${S.switched ? ' switched' : ''}">
+    ${(() => { const sw = S.switched; S.switched = false; return ''; })()}${assets ? assetsThread() : gameThread()}
     ${assets && ac && !hasUser(ac) ? '<p class="draftnote">Not saved until you send the first message</p>' : ''}
-    ${assets && ac && S.resumed === ac.id ? `<div class="resume"><span>Continuing “${esc(ac.name)}” · last used ${rel(ac.last)}</span><span data-act="newchat">New chat</span></div>` : ''}
+    ${assets && ac && S.resumed === ac.id ? (() => { const n = chatItems(ac).length; const th = chatItems(ac)[0];
+      return `<div class="resume" role="dialog" aria-label="Continue this chat?"><div class="rs-top">${th ? `<div class="rs-th">${I(th.img, 28, 28)}</div>` : ''}<div class="rs-tx"><p class="rs-q">Continue in “${esc(ac.name)}”?</p><p class="rs-m">Latest ${ac.cat === '2D & UI' ? '2D' : ac.cat === 'Character' ? 'character' : '3D'} chat · ${n} asset${n === 1 ? '' : 's'} · ${rel(ac.last)}</p></div></div>
+        <div class="rs-acts"><div class="rs-btn ghost" data-act="newchat">Start a new chat</div><div class="rs-btn main" data-act="rkeep">Continue here</div></div></div>`; })() : ''}
     <div class="composer-area">
       <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg',6,6)}</div></div>
       <div class="composer">
@@ -1226,6 +1238,7 @@ function renderChat() {
   if (hadSearchFocus) { const s2 = document.getElementById('chatSearch'); if (s2) { s2.focus(); s2.setSelectionRange(caret, caret); } }
   const rn = document.getElementById('crename'); if (rn) { rn.focus(); rn.select(); }
   const th = document.getElementById('thread'); if (th) th.scrollTop = th.scrollHeight;
+  if (S.resumed) { const ta2 = document.getElementById('cbInput'); if (ta2 && document.activeElement !== ta2) ta2.focus({ preventScroll: true }); }
 }
 function syncSend() { const ta = document.getElementById('cbInput'); const b = document.getElementById('sendBtn'); if (ta && b) b.classList.toggle('off', !S.busy && !ta.value.trim()); }
 function assetName(text) {
@@ -1345,12 +1358,13 @@ stage.addEventListener('click', (e) => {
     case 'catb': S.cat = S.cat === v ? null : v; S.libMenu = null; renderLibMenu(); renderPanel(); if (S.chat === 'assets' && !S.thread.length) { const c = chatById(S.activeChat); if (c && S.cat && GEN_TITLE[S.cat]) c.cat = S.cat; renderChat(); } break;
     case 'gennow': {
       const cat = S.cat && GEN_TITLE[S.cat] ? S.cat : '3D Model'; S.cat = cat;
-      const cur = S.chat === 'assets' ? chatById(S.activeChat) : null;
-      if (cur && cur.cat === cat) { S.menu = false; renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus(); break; }
-      const latest = S.chats.filter(c => !c.archived && c.cat === cat && hasUser(c)).sort((a, b) => b.last - a.last)[0];
-      if (latest) { openChat(latest.id); S.resumed = latest.id; renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus(); }
-      else newChat(cat);
+      const recent = (c) => Math.max(c.opened || 0, c.last || 0);
+      const latest = S.chats.filter(c => !c.archived && c.cat === cat && hasUser(c)).sort((a, b) => recent(b) - recent(a))[0];
+      if (!latest) { newChat(cat); break; }
+      if (S.chat === 'assets' && S.activeChat === latest.id) { S.menu = false; S.resumed = null; renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus(); break; }
+      openChat(latest.id); S.resumed = latest.id; S.switched = true; renderChat();
       break; }
+    case 'rkeep': S.resumed = null; renderChat(); { const ta = document.getElementById('cbInput'); if (ta) ta.focus(); } break;
     case 'chatmenu': S.menu = !S.menu; S.menuRow = null; S.renaming = null; S.chatView = 'list'; S.chatQuery = ''; renderChat(); break;
     case 'cgame': goGame(); break;
     case 'copen': if (S.renaming === v) break; openChat(v); break;
@@ -1371,7 +1385,7 @@ stage.addEventListener('click', (e) => {
       S.confirmDel = null; renderDel(); renderChat(); toast(`Deleted “${c.name}” · assets kept in your library`); break; }
     case 'lmadd': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); if (it) { placeB(it); toast(`${it.name} added to Scene 1`); } break; }
     case 'lmdl': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); toast(`Downloading ${it ? it.name : 'asset'}…`); break; }
-    case 'lmchat': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); const c = it && chatById(it.chatId); if (c) { c.archived = false; openChat(c.id); S.resumed = c.id; renderChat(); toast(`Opened “${c.name}” · describe what else you need in this style`); } break; }
+    case 'lmchat': { const it = S.lib.find(i => i.id === +v); S.libMenu = null; renderLibMenu(); const c = it && chatById(it.chatId); if (c) { c.archived = false; openChat(c.id); toast(`Opened “${c.name}” · describe what else you need in this style`); } break; }
     case 'send': sendB(); break;
     case 'cregen': regenConcept(+v); break;
     case 'ccontinue': continueTo3D(+v, false); break;
@@ -1446,7 +1460,7 @@ stage.addEventListener('focusout', (e) => { if (e.target.id === 'crename' && S.r
 (function () {
   const v = new URLSearchParams(location.search).get('chats'); if (!v) return;
   renderShell(); fit();
-  if (v === 'resume') { S.cat = '3D Model'; renderPanel(); openChat('c-puppy'); S.resumed = 'c-puppy'; renderChat(); return; }
+  if (v === 'resume') { S.cat = '3D Model'; renderPanel(); openChat('c-puppy'); S.resumed = 'c-puppy'; S.switched = true; renderChat(); return; }
   if (v === 'draft') { S.cat = '3D Model'; newChat('3D Model'); return; }
   openChat('c-puppy');
   if (v === 'lib') { S.menu = false; renderChat(); S.cat = null; renderPanel(); S.libMenu = S.lib.find(i => i.chatId === 'c-puppy').id; setTimeout(renderLibMenu, 50); return; }
