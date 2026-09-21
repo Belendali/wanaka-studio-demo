@@ -1081,7 +1081,7 @@ const panel = () => {
 
 /* ---------- right chat ---------- */
 const curGame = () => (S.games || []).find(g => g.id === S.gameChat) || { name: 'Game creating', prompt: 'I want to create a Jump Jump game' };
-const gameThread = () => !curGame().prompt ? `<div class="cb-empty">${I('mascot.png',120,128)}<p class="t">Game</p><p class="s">Plan and build a game with Wana.</p></div>` : `<div class="msgs">
+const gameThread = () => !curGame().prompt ? `<div class="cb-empty">${I('mascot.png',120,128)}<p class="t">Chat</p><p class="s">Plan and build a game with Wana.</p></div>` : `<div class="msgs">
     <div class="user-msg"><div class="bubble">${esc(curGame().prompt)}</div><div class="msg-actions">${I('msg-copy.svg',16,16)}${I('msg-edit.svg',16,16)}</div></div>
     <div class="think">
       <p class="lbl">Thinking...</p>
@@ -1155,7 +1155,7 @@ function newChat(cat) {
   renderPanel(); renderChat(); const ta = document.getElementById('cbInput'); if (ta) ta.focus();
 }
 function goGame(id) { syncActive(); discardDraft(); if (id) S.gameChat = id; const g = curGame(); if (g) g.opened = Date.now(); S.chat = 'game'; S.switched = true; S.menu = false; S.menuRow = null; S.resumed = null; renderChat(); }
-function newGame() { const g = { id: 'g' + (uid++), name: 'New game', prompt: null, last: Date.now() }; S.games.unshift(g); goGame(g.id); }
+function newGame() { const g = { id: 'g' + (uid++), name: 'New chat', prompt: null, last: Date.now() }; S.games.unshift(g); goGame(g.id); }
 const catBadge = (cat) => cat === '2D & UI' ? '<span class="badge d2">2D</span>' : '<span class="badge d3">3D</span>';
 const chatRow = (c, archived) => {
   const items = chatItems(c); const thumb = items[0]; const n = items.length;
@@ -1177,20 +1177,20 @@ const chatRow = (c, archived) => {
 };
 const CAT_FILTERS = [['all', 'All'], ['3D Model', '3D'], ['2D & UI', '2D'], ['Character', 'Character']];
 const gameRow = (g) => { const on = S.chat === 'game' && S.gameChat === g.id;
-  return `<div class="crow${on ? ' on' : ''}" data-act="cgame" data-v="${g.id}"><div class="cthumb">${I('mascot.png',28,30)}</div><div class="ctext"><div class="ctitle"><span class="nm">${esc(g.name)}</span><span class="badge game">Game</span></div><div class="cmeta">${g.prompt ? 'Plan &amp; build with Wana' : 'Draft'} · ${rel(g.last)}</div></div>${on ? '<span class="ccheck">✓</span>' : ''}</div>`; };
+  return `<div class="crow${on ? ' on' : ''}" data-act="cgame" data-v="${g.id}"><div class="cthumb">${I('mascot.png',28,30)}</div><div class="ctext"><div class="ctitle"><span class="nm">${esc(g.name)}</span></div><div class="cmeta">${g.prompt ? 'Plan &amp; build with Wana' : 'Draft'} · ${rel(g.last)}</div></div>${on ? '<span class="ccheck">✓</span>' : ''}</div>`; };
 const chatMenu = () => {
   const tab = S.chatTab || 'assets';
   const q = (S.chatQuery || '').toLowerCase(); const match = (n) => !q || (n || '').toLowerCase().includes(q);
   const saved = S.chats.filter(c => hasUser(c) && match(c.name));
   const byLast = (a, b) => b.last - a.last;
   const liveAll = S.chats.filter(c => hasUser(c) && !c.archived);
-  const tabs = `<div class="ctabs"><span class="${tab === 'game' ? 'on' : ''}" data-act="ctab" data-v="game">Game <b>${S.games.length}</b></span><span class="${tab === 'assets' ? 'on' : ''}" data-act="ctab" data-v="assets">Assets <b>${liveAll.length}</b></span></div>`;
-  const search = `<div class="csearch">${I('search.svg',12,12)}<input id="chatSearch" placeholder="${tab === 'game' ? 'Search game chats' : 'Search asset chats'}" value="${esc(S.chatQuery || '')}" autocomplete="off"></div>`;
+  const tabs = `<div class="ctabs"><span class="${tab === 'game' ? 'on' : ''}" data-act="ctab" data-v="game">Chat <b>${S.games.length}</b></span><span class="${tab === 'assets' ? 'on' : ''}" data-act="ctab" data-v="assets">Assets <b>${liveAll.length}</b></span></div>`;
+  const search = `<div class="csearch">${I('search.svg',12,12)}<input id="chatSearch" placeholder="${tab === 'game' ? 'Search chats' : 'Search asset chats'}" value="${esc(S.chatQuery || '')}" autocomplete="off"></div>`;
   if (tab === 'game') {
     const games = S.games.filter(g => match(g.name)).sort(byLast);
     return `<div class="chat-menu sw2" id="chatmenu">${tabs}${search}
-      <div class="csec">RECENT</div>${games.map(gameRow).join('') || `<p class="cempty">No game chats match “${esc(S.chatQuery)}”</p>`}
-      <div class="cfoot"><span class="new" data-act="newgame">+&nbsp; New game chat</span></div></div>`;
+      <div class="csec">RECENT</div>${games.map(gameRow).join('') || `<p class="cempty">No chats match “${esc(S.chatQuery)}”</p>`}
+      <div class="cfoot"><span class="new" data-act="newgame">+&nbsp; New chat</span></div></div>`;
   }
   if (S.chatView === 'archived') {
     const arch = saved.filter(c => c.archived).sort(byLast);
@@ -1207,7 +1207,7 @@ const chatMenu = () => {
     ${pinned.length ? `<div class="csec">PINNED</div>${pinned.map(c => chatRow(c)).join('')}` : ''}
     ${recent.length ? `<div class="csec">RECENT</div>${recent.map(c => chatRow(c)).join('')}` : ''}
     ${!pinned.length && !recent.length ? `<p class="cempty">${q ? `No asset chats match “${esc(S.chatQuery)}”` : 'No chats in this category yet'}</p>` : ''}
-    <div class="cfoot"><span class="new" data-act="newchat">+&nbsp; New assets chat</span><span class="arch" data-act="cview" data-v="archived">Archived (${S.chats.filter(c => c.archived && hasUser(c)).length}) ›</span></div></div>`;
+    <div class="cfoot"><span class="new" data-act="newchat">+&nbsp; New chat</span><span class="arch" data-act="cview" data-v="archived">Archived (${S.chats.filter(c => c.archived && hasUser(c)).length}) ›</span></div></div>`;
 };
 function renderDel() {
   stage.querySelectorAll('.overlay.cdel, .cdlg').forEach(n => n.remove()); if (!S.confirmDel) return;
@@ -1402,7 +1402,7 @@ stage.addEventListener('click', (e) => {
     case 'cgame': goGame(v); break;
     case 'copen': if (S.renaming === v) break; openChat(v); break;
     case 'cnoop': break;
-    case 'newchat': newChat(S.cat && GEN_TITLE[S.cat] ? S.cat : null); break;
+    case 'newchat': if (S.chat === 'game' || (S.menu && S.chatTab === 'game')) newGame(); else newChat(S.cat && GEN_TITLE[S.cat] ? S.cat : null); break;
     case 'cview': S.chatView = v; S.menuRow = null; renderChat(); break;
     case 'cmore': S.menuRow = S.menuRow === v ? null : v; renderChat(); break;
     case 'crename': S.menuRow = null; S.renaming = v; renderChat(); break;
