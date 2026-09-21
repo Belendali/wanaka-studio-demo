@@ -41,12 +41,12 @@ No build step, no dependencies. Fonts (Poppins, Bitcount Grid Single) load from 
 - **Reuse by default**: Generate now jumps to the chat of that category the user opened most recently, and a small card asks “Continue in …?” with **Continue here** / **Start a new chat**. Sending a message also counts as continuing. If the user is already in that chat, no card is shown.
 - **Drafts**: a new chat shows a Draft tag and is discarded if you leave before sending the first message.
 - **Auto name** from the first prompt; rename inline from the row menu (F2, Enter to save, Esc to cancel).
-- **Switcher**: search, Game chat on top, Pinned, Recent (by last activity); rows show first-result thumbnail, category badge, asset count, last activity.
+- **Switcher**: Game / Assets tabs (opens on the tab of the current chat). Assets has search, All · 3D · 2D · Character filters, Pinned and Recent (by last activity); rows show first-result thumbnail, category badge, asset count, last activity. Game lists game chats with New game chat.
 - **Row menu**: Rename · Pin to top / Unpin · Archive · Delete chat. Pin and archive toasts include Undo. Delete asks for confirmation and keeps the chat's assets in the library.
 - **Archived** view with Restore.
 - **Library card menu**: Add to scene · Continue in chat (reopens the chat that made the asset; disabled if that chat was deleted) · Download.
 
-Review states: `plan-b.html?chats=menu|rowmenu|rename|archived|delete|lib|resume|draft`
+Review states: `plan-b.html?chats=menu|games|rowmenu|rename|archived|delete|lib|resume|draft`
 
 ## Layout
 
