@@ -52,3 +52,16 @@ Review states: `plan-b.html?chats=menu|games|rowmenu|rename|archived|delete|lib|
 
 - `index.html` — page + styles + logic (`renderShell`, `renderPanel`, `generate`, `renderModal`)
 - `assets/` — icons and images exported from Figma, plus processed cat resources
+
+
+## Plan C · one chat per category (simplest)
+
+`plan-c.html` tests the simplest model: each category (3D Model, 2D & UI, Character) has exactly one chat, like a fixed room.
+
+- **Generate now** goes straight into that category's chat. No question, no new chats, no list to manage.
+- **New topic** (top right) adds a divider inside the same chat; results after it don't use earlier ones as a style reference. Undo from the toast.
+- **History folds by topic and day**: older topics collapse into one row (thumbnail, name, asset count). Show / Hide to expand.
+- **Switcher** has only four destinations: the game chat, 3D Model, 2D & UI, Character.
+- **Library card menu**: Add to scene · Show in chat (jumps to and highlights the message that made it) · Download · Delete (the chat card greys out, Undo from the toast).
+
+Live: https://belendali.github.io/wanaka-studio-demo/plan-c.html · review states `plan-c.html?c=menu|history|topic|lib|show`
