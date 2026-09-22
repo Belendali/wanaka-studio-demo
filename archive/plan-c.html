@@ -410,7 +410,7 @@
   .rsub .dot { color: var(--w32); }
   .overlay.anim { z-index: 40; } .overlay.anim.rig { z-index: 44; }
   .amodal { position: absolute; left: 267px; top: 80px; width: 1385px; height: 920px; border-radius: 20px; background: var(--bg); z-index: 41; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.55); }
-  .ambg { position: absolute; inset: -8px; background: url("assets/cf-bg.jpg") center/cover no-repeat; opacity: .35; pointer-events: none; }
+  .ambg { position: absolute; inset: -8px; background: url("../assets/cf-bg.jpg") center/cover no-repeat; opacity: .35; pointer-events: none; }
   .amhead { position: absolute; left: 24px; top: 24px; display: flex; gap: 8px; align-items: flex-start; }
   .amhead .d { font: 500 14px/1.2 var(--font); color: rgba(255,255,255,.85); } .amhead .t { font: 400 13px/17px var(--font); color: rgba(255,255,255,.85); }
   .amodal .close { position: absolute; left: 1337px; top: 21px; width: 24px; height: 24px; cursor: pointer; border-radius: 12px; } .amodal .close:hover { background: var(--w08); }
@@ -428,7 +428,7 @@
   .mtiles3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .mtile { height: 72px; border-radius: 16px; background: rgba(255,255,255,.05); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; border: 1.5px solid transparent; font: 400 14px/16px var(--font); color: rgba(255,255,255,.8); }
   .mtile:hover { background: rgba(255,255,255,.1); } .mtile.on { border-color: var(--brand); background: rgba(192,240,0,.08); color: #fff; }
-  .mman { width: 70px; height: 90px; background: url("assets/cf-mannequin.png") no-repeat; background-size: 700% 300%; opacity: .95; }
+  .mman { width: 70px; height: 90px; background: url("../assets/cf-mannequin.png") no-repeat; background-size: 700% 300%; opacity: .95; }
   .cfstage2 { position: absolute; left: calc(50% + 221px); top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 20px; }
   .cfchar { position: relative; width: 380px; height: 426px; }
   .cfchar img.cfimg2 { width: 380px; height: 426px; object-fit: contain; object-position: bottom; }
@@ -589,14 +589,14 @@
 
 <div class="picker" id="picker"><span class="lbl">Wanaka Studio · Plan C · one chat per category</span>
   <button type="button" id="reset">Reset demo</button>
-  <a href="index.html" style="font:500 12px/1 var(--font);color:#ccc;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:8px">Plan A ↗</a>
-  <a href="plan-b.html" style="font:500 12px/1 var(--font);color:#ccc;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:6px">Plan B ↗</a>
+  <a href="plan-a.html" style="font:500 12px/1 var(--font);color:#ccc;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:8px">Plan A ↗</a>
+  <a href="../index.html" style="font:500 12px/1 var(--font);color:#ccc;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:6px">Plan B ↗</a>
   <span class="zoom" id="zoom"></span></div>
 
 <div class="stage-wrap"><div class="stage-box" id="box"><div class="stage" id="stage"></div></div></div>
 
 <script>
-const A = 'assets/';
+const A = '../assets/';
 const U = (n) => A + n;
 const I = (n, w, h, extra='') => `<img src="${A}${n}" width="${w}" height="${h}" style="width:${w}px;height:${h}px" alt="" ${extra}>`;
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

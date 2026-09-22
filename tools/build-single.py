@@ -1,4 +1,4 @@
-"""Build self-contained single-file HTML: python3 tools/build-single.py plan-b.html wanaka-plan-b-single-file.html"""
+"""Build self-contained single-file HTML: python3 tools/build-single.py index.html wanaka-create-single-file.html"""
 import base64, mimetypes, os, json, sys, re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src, out = sys.argv[1], sys.argv[2]

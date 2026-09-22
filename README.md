@@ -1,68 +1,127 @@
-# Wanaka Studio · Create panel demo
+# Wanaka Studio · Create（对话式生成）— 开发交接
 
-Interactive HTML/CSS/JS reproduction of the Wanaka Studio "Create" flow from the Figma file
-(section `0902/0903` + detail screens), built 1:1 at 1920×1080 and scaled to fit the browser window.
+**在线 demo**：https://belendali.github.io/wanaka-studio-demo/
+**Figma**：[Wanaka Studio · 0909/0910 分区](https://www.figma.com/design/PWtgAaGdl6znpuQykrnIbb/Wanaka-Studio?node-id=47617-12192)
 
-## Plan B · chat generation (3D flow)
+这是一个可交互的原型，用来说明**交互和状态规则**，不是生产代码。视觉以 Figma 为准，行为以本文档和 demo 为准。两者不一致时，请找设计确认。
 
-`plan-b.html` explores the alternative layout: the left panel keeps the categories and the asset library, and generation happens in a dedicated **Create Assets** chat on the right so style stays continuous across assets.
+---
 
-Flow: pick **3D Model** (or **2D & UI** / **Character**) → **Generate now** opens `Create Assets 01` → describe what you need → result card → **Add to scene**. 2D results offer **Create 3D model**, which continues in the same chat. Review any step with `plan-b.html?step=1..7&cat=3D%20Model|2D%20%26%20UI|Character` (matches the Figma frames in sections 0909/0910 and the 2D & Character draft).
+## 1. 整体结构
 
-Live: https://belendali.github.io/wanaka-studio-demo/plan-b.html
+| 区域 | 内容 |
+|---|---|
+| 左侧 Create 面板 | 类别（Character / 3D Model / 2D & UI / …）、**Generate now** 按钮、资产库（搜索 + 卡片） |
+| 中间 | 场景视口，资产 Add to scene 后以编辑态（选中框 + 移动 gizmo）出现 |
+| 右侧 Chat 面板 | 顶部：对话名 ▾（切换器）+ **「+」**；中间：对话内容；底部：输入框 |
 
-## Run
+右侧有两种对话：
 
-- Open `index.html` in a browser (assets are loaded from `assets/`), or
-- open `wanaka-studio-single-file.html` — everything inlined, works from anywhere.
+- **Chat**：和 Wana 一起规划、制作游戏的对话（原型里的 “Jump Jump game”）。
+- **Asset chat**：生成资产的对话，按类别区分：**3D Model / 2D & UI / Character**。同一个对话里连续生成，风格保持一致。
 
-No build step, no dependencies. Fonts (Poppins, Bitcount Grid Single) load from Google Fonts.
+## 2. 生成流程
 
-## What it covers
+### 3D Model / 2D & UI
+1. 左侧选类别 → **Generate now** → 进入该类别的 asset chat（规则见 §3.1）。
+2. 输入描述并发送 → Thinking → 结果卡片（预览、文件名、**Add Animation**（仅 3D）/ **Add to scene**）。
+3. 结果同时出现在左侧资产库顶部。
+4. 一次要多个（如 “Create 4 puppy models”）→ **多变体卡片**：左边大图，右边缩略图点击切换；下方 **Add all N to scene** / **Keep selected only**。
+5. 2D 结果可以 **Create 3D model**，在同一个对话里继续。
 
-- Create panel: Character / 2D & UI / 3D Model categories, Generate + My Assets tabs
-- Prompt input with live counter, reference images (up to 5, wraps at 5/5), ratio / variants / toggles / pose
-- Generate → generating cards with progress → results revealed in My Assets (grouped by batch)
-- Asset detail modal: 2D (Create 3D model / Create Character), 3D (grid backdrop, Add Animation, Create Character), Character (turnaround animation, Add Animation)
-- Add to scene: the asset lands in the viewport in an edit state (selection box, move gizmo, name tag); drag to move, Esc to deselect, Delete to remove
-- Empty states, hover actions (favorite / add to scene), toasts
-- Character flow uses the cat resources (`assets/cat.png`, `assets/cat-turn.webp`)
+### Character
+1. 先生成**概念图** → 用户确认；**10 秒无操作自动继续**（可重新生成）。
+2. 生成模型 + 绑定骨骼（进度卡片）→ 结果卡片标记 Rigged。
+3. 点开 → **动作弹窗**：左侧动作列表（纯文字标签），中间实时预览；**Show Rig 默认关闭**，无网格背景。
+4. 弹窗内 **Edit Rig** → Orient Model 对话框（调整朝向）；另有 **Download**、**Add to scene**。
 
-## URL hooks
+## 3. 对话管理规则
 
-- `?cat=3D%20Model` — open a category (`2D%20%26%20UI`, `3D%20Model`, `Character`)
-- `?tab=assets` — open My Assets
-- `?demo=I%20want%20a%20cute%20dog` — prefill the prompt and generate
-- `?detail=1` — open the first result's detail after generation
-- `?add=1` — place the first result into the scene after generation
+### 3.1 Generate now = 默认复用
+- 跳到**该类别最近打开的那个 asset chat**（不含已归档的），比较的是 `max(最后打开时间, 最后活跃时间)`。
+- 对话顶部弹出卡片 **“Continue in this chat?”**，副标题如 “Latest 3D chat · 4 assets · 2 h ago”，按钮：**Start a new chat** / **Continue here**。
+- 直接发消息也算继续，卡片消失。已经在该对话里时，不弹卡片。
+- 该类别还没有对话时，直接新建。
 
-### Asset chat management (Plan B)
+### 3.2 顶部「+」：直接新建，不弹选择
+- 在 Chat 里点 → 新建一个 Chat。
+- 在 asset chat 里点 → 新建一个**同类别**的 asset chat。
 
-- **Reuse by default**: Generate now jumps to the chat of that category the user opened most recently, and a small card asks “Continue in this chat?” with **Continue here** / **Start a new chat**. Sending a message also counts as continuing. If the user is already in that chat, no card is shown.
-- **Drafts**: a new chat shows a Draft tag and is discarded if you leave before sending the first message.
-- **Auto name** from the first prompt; rename inline from the row menu (F2, Enter to save, Esc to cancel).
-- **Switcher**: Chat / Assets tabs (opens on the tab of the current chat). Assets has search, All · 3D · 2D · Character filters, Pinned and Recent (by last activity); rows show first-result thumbnail, category badge, asset count, last activity. Chat lists the game-building chats. Both tabs end with **+ New chat**.
-- **+ button** (header): one tap, no picker — creates a new chat of the kind you are in (in a Chat → new Chat; in an asset chat → new chat of that category).
-- **Row menu**: Rename · Pin to top / Unpin · Archive · Delete chat. Pin and archive toasts include Undo. Delete asks for confirmation and keeps the chat's assets in the library.
-- **Archived** view with Restore.
-- **Library card menu**: Add to scene · Continue in chat (reopens the chat that made the asset; disabled if that chat was deleted) · Download.
+### 3.3 草稿与命名
+- 新对话显示 **Draft** 标签；发送第一条消息前离开，就丢弃，不进列表。
+- 用第一条 prompt 自动命名（如 “Puppy models”），可重命名。
 
-Review states: `plan-b.html?chats=menu|games|rowmenu|rename|archived|delete|lib|resume|draft`
+### 3.4 切换器（点对话名 ▾）
+- 两个分组：**Chat / Assets**，带数量；默认打开当前对话所属的分组。
+- 每个分组都有搜索框；底部是 **+ New chat**。
+- **Assets**：先 **PINNED**，再 **RECENT**（按最后活跃时间），**不做类别筛选**。每行显示首个结果缩略图、类别标签（3D/2D）、资产数量、最后活跃时间。底部右侧是 **Archived (n) ›**。
+- **Chat**：列出做游戏的对话，按最后活跃时间排序。
+- 当前对话打 ✓。Esc 关闭。
 
-## Layout
+### 3.5 行菜单（hover 出现 ···）
+- **Rename**（行内编辑，Enter 保存，Esc 取消，F2 快捷键）
+- **Pin to top / Unpin**（toast 带 Undo）
+- **Archive**（toast 带 Undo）
+- **Delete chat** → 二次确认。**只删对话，资产保留在资产库和场景里。**
 
-- `index.html` — page + styles + logic (`renderShell`, `renderPanel`, `generate`, `renderModal`)
-- `assets/` — icons and images exported from Figma, plus processed cat resources
+### 3.6 归档
+- 30 天无活动的对话自动归档（原型里用种子数据演示）。
+- Archived 视图可 Restore；在归档对话里发消息，自动恢复。
 
+### 3.7 资产库卡片菜单
+- **Add to scene** · **Continue in chat** · **Download**
+- Continue in chat：打开生成该资产的对话（hover 提示对话名）。对话已删除时置灰，显示 “Chat deleted”。
 
-## Plan C · one chat per category (simplest)
+## 4. 数据模型（原型里的实现，供参考）
 
-`plan-c.html` tests the simplest model: each category (3D Model, 2D & UI, Character) has exactly one chat, like a fixed room.
+```js
+AssetChat = { id, name, cat: '3D Model' | '2D & UI' | 'Character',
+              thread: Message[], pinned, archived, last /*最后活跃*/, opened /*最后打开*/ }
+GameChat  = { id, name, prompt, last }
+Asset     = { id, name, kind: '2D' | '3D', cat, img, large, chatId, rigged? }
+Message   = { role: 'user' | 'thinking' | 'result' | 'gallery' | 'concept' | 'rig', ... }
+```
 
-- **Generate now** goes straight into that category's chat. No question, no new chats, no list to manage.
-- **New topic** (top right) adds a divider inside the same chat; results after it don't use earlier ones as a style reference. Undo from the toast.
-- **History folds by topic and day**: older topics collapse into one row (thumbnail, name, asset count). Show / Hide to expand.
-- **Switcher** has only four destinations: the game chat, 3D Model, 2D & UI, Character.
-- **Library card menu**: Add to scene · Show in chat (jumps to and highlights the message that made it) · Download · Delete (the chat card greys out, Undo from the toast).
+关键点：**Asset 记录 `chatId`**，所以资产库能找回生成它的对话；删除对话不删资产。
 
-Live: https://belendali.github.io/wanaka-studio-demo/plan-c.html · review states `plan-c.html?c=menu|history|topic|lib|show`
+## 5. 对照 Figma 查看各状态
+
+直接打开下面的链接，就能看到对应状态（在线 demo 地址后面加参数）：
+
+| 链接参数 | 状态 | Figma 帧 |
+|---|---|---|
+| `?step=1` | 默认（Chat） | default |
+| `?step=2` | 选中 3D Model | default create 3D |
+| `?step=3` | Generate now → 新 asset chat | default create 3D generate new chat |
+| `?step=4` | 生成中 Thinking | default create 3D |
+| `?step=5` / `6` | 结果 / 第二个结果 | default created 3D / 02 |
+| `?step=7` | Add to scene 编辑态 | default created 3D add |
+| `?step=8` | 多变体卡片 | 2D & UI created |
+| `?step=9` → `14` | Character：概念图 → 绑骨 → 结果 → 动作弹窗 → Edit Rig | Character 1 / 3 / 5 |
+| `&cat=2D%20%26%20UI` 或 `&cat=Character` | 与 step 组合，切换类别 | 2D & UI / Character 行 |
+| `?chats=menu` | 切换器 · Assets | Chats 1 |
+| `?chats=games` | 切换器 · Chat | Chats 1b |
+| `?chats=rowmenu` | 行菜单 | Chats 2 |
+| `?chats=rename` | 行内重命名 | Chats 3 |
+| `?chats=delete` | 删除确认 | Chats 4 |
+| `?chats=archived` | 归档列表 | Chats 6 |
+| `?chats=lib` | 资产库卡片菜单 | Chats 7 |
+| `?chats=resume` | Generate now 复用 + 继续卡片 | Chats 8 |
+| `?chats=draft` | 新对话草稿 | Chats 9 |
+
+完整规则卡（中英）：Figma 帧 **Chat management · rules**。
+
+## 6. 文件
+
+| 路径 | 说明 |
+|---|---|
+| `index.html` | 原型（HTML + CSS + JS 单文件，无依赖、无构建）。1920×1080 画布，按窗口缩放 |
+| `wanaka-create-single-file.html` | 同上，图片全部内联，可以离线打开或直接发给别人 |
+| `assets/` | 从 Figma 导出的图标和图片 |
+| `tools/build-single.py` | 生成单文件版：`python3 tools/build-single.py index.html wanaka-create-single-file.html` |
+| `plan-b.html` | 旧链接，自动跳转到 `index.html` |
+| `archive/` | 已放弃的方案（Plan A 表单式、Plan C 每类一个对话），仅存档，页面上没有入口 |
+
+代码导读（`index.html`）：`bState()` 是初始数据；`panel()` / `chat()` / `chatMenu()` 负责渲染；`openChat` / `newChat` / `newGame` / `sendB` 是对话逻辑；`startCharacter` / `renderAnim` 是 Character 流程；所有点击都通过 `data-act` 统一分发。文件里还留着 Plan A 表单面板的代码，当前入口不会用到。
+
+**原型里是模拟的部分**：生成（固定延时 + 示例图）、自动命名、30 天归档、下载，都没有接后端。

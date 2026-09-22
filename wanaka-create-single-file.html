@@ -502,9 +502,6 @@
   .ctabs span { flex: 1 0 0; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; font: 500 13px/16px var(--font); color: rgba(255,255,255,.5); cursor: pointer; border: 1px solid transparent; }
   .ctabs span:hover { color: rgba(255,255,255,.8); } .ctabs span.on { background: var(--w14); border-color: var(--w20); color: #fff; }
   .ctabs b { font-weight: 500; font-size: 11px; color: rgba(255,255,255,.45); } .ctabs span.on b { color: rgba(255,255,255,.7); }
-  .cchips { display: flex; gap: 6px; padding: 6px 2px 2px; }
-  .cchips span { padding: 4px 9px; border-radius: 999px; background: var(--w06); font: 500 11px/14px var(--font); color: rgba(255,255,255,.6); cursor: pointer; white-space: nowrap; }
-  .cchips span:hover { background: var(--w08); color: #fff; } .cchips span.on { background: #fff; color: #1a1517; }
   .csearch { height: 28px; padding: 0 8px; border-radius: 8px; background: var(--w08); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
   .csearch input { flex: 1 0 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 12px/12px var(--font); }
   .csearch input::placeholder { color: rgba(255,255,255,.4); }
@@ -566,10 +563,8 @@
 </style>
 
 
-<div class="picker" id="picker"><span class="lbl">Wanaka Studio · Plan B · chat generation</span>
+<div class="picker" id="picker"><span class="lbl">Wanaka Studio · Create · chat generation</span>
   <button type="button" id="reset">Reset demo</button>
-  <a href="https://belendali.github.io/wanaka-studio-demo/" style="font:500 12px/1 var(--font);color:#ccc;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:8px">Plan A ↗</a>
-  <a href="plan-c.html" style="font:500 12px/1 var(--font);color:#1a1a1a;background:#c0f000;border:1px solid #c0f000;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:6px">Plan C · one chat per category ↗</a>
   <span class="zoom" id="zoom"></span></div>
 
 <div class="stage-wrap"><div class="stage-box" id="box"><div class="stage" id="stage"></div></div></div>
@@ -1053,7 +1048,7 @@ function bState() {
     { id: 'g-jump', name: 'Jump Jump game', prompt: 'I want to create a Jump Jump game', last: now - 12 * 60e3 },
     { id: 'g-space', name: 'Space runner', prompt: 'Make an endless space runner with coins', last: now - 3 * DAY },
   ];
-  return { plan: 'B', cat: null, chat: 'game', menu: false, thread: [], chatNo: 0, games, gameChat: 'g-jump', chatTab: 'game', assetFilter: 'all',
+  return { plan: 'B', cat: null, chat: 'game', menu: false, thread: [], chatNo: 0, games, gameChat: 'g-jump', chatTab: 'game',
     chats, activeChat: null, chatView: 'list', chatQuery: '', menuRow: null, renaming: null, confirmDel: null, libMenu: null, resumed: null,
     lib: lib.filter(it => !chats.find(c => c.id === it.chatId).archived) };
 }
@@ -1176,7 +1171,6 @@ const chatRow = (c, archived) => {
       <div class="mi danger" data-act="cdelete" data-v="${c.id}"><span>Delete chat</span></div></div>` : ''}
   </div>`;
 };
-const CAT_FILTERS = [['all', 'All'], ['3D Model', '3D'], ['2D & UI', '2D'], ['Character', 'Character']];
 const gameRow = (g) => { const on = S.chat === 'game' && S.gameChat === g.id;
   return `<div class="crow${on ? ' on' : ''}" data-act="cgame" data-v="${g.id}"><div class="cthumb">${I('mascot.png',28,30)}</div><div class="ctext"><div class="ctitle"><span class="nm">${esc(g.name)}</span></div><div class="cmeta">${g.prompt ? 'Plan &amp; build with Wana' : 'Draft'} · ${rel(g.last)}</div></div>${on ? '<span class="ccheck">✓</span>' : ''}</div>`; };
 const chatMenu = () => {
@@ -1200,14 +1194,12 @@ const chatMenu = () => {
       ${arch.map(c => chatRow(c, true)).join('') || '<p class="cempty">No archived chats</p>'}
       <div class="cfoot"><span class="note">Archived chats keep their assets in the library</span></div></div>`;
   }
-  const f = S.assetFilter || 'all';
-  const live = saved.filter(c => !c.archived && (f === 'all' || c.cat === f));
+  const live = saved.filter(c => !c.archived);
   const pinned = live.filter(c => c.pinned).sort(byLast); const recent = live.filter(c => !c.pinned).sort(byLast);
-  const chips = `<div class="cchips">${CAT_FILTERS.map(([v, l]) => { const n = v === 'all' ? liveAll.length : liveAll.filter(c => c.cat === v).length; return `<span class="${f === v ? 'on' : ''}" data-act="cfilter" data-v="${v}">${l} ${n}</span>`; }).join('')}</div>`;
-  return `<div class="chat-menu sw2" id="chatmenu">${tabs}${search}${chips}
+  return `<div class="chat-menu sw2" id="chatmenu">${tabs}${search}
     ${pinned.length ? `<div class="csec">PINNED</div>${pinned.map(c => chatRow(c)).join('')}` : ''}
     ${recent.length ? `<div class="csec">RECENT</div>${recent.map(c => chatRow(c)).join('')}` : ''}
-    ${!pinned.length && !recent.length ? `<p class="cempty">${q ? `No asset chats match “${esc(S.chatQuery)}”` : 'No chats in this category yet'}</p>` : ''}
+    ${!pinned.length && !recent.length ? `<p class="cempty">${q ? `No asset chats match “${esc(S.chatQuery)}”` : 'No asset chats yet'}</p>` : ''}
     <div class="cfoot"><span class="new" data-act="newchat">+&nbsp; New chat</span><span class="arch" data-act="cview" data-v="archived">Archived (${S.chats.filter(c => c.archived && hasUser(c)).length}) ›</span></div></div>`;
 };
 function renderDel() {
@@ -1398,7 +1390,6 @@ stage.addEventListener('click', (e) => {
     case 'rkeep': S.resumed = null; renderChat(); { const ta = document.getElementById('cbInput'); if (ta) ta.focus(); } break;
     case 'chatmenu': S.menu = !S.menu; S.menuRow = null; S.renaming = null; S.chatView = 'list'; S.chatQuery = ''; S.chatTab = S.chat === 'game' ? 'game' : 'assets'; S.assetFilter = 'all'; renderChat(); break;
     case 'ctab': S.chatTab = v; S.chatView = 'list'; S.chatQuery = ''; S.menuRow = null; renderChat(); break;
-    case 'cfilter': S.assetFilter = v; S.menuRow = null; renderChat(); break;
     case 'newgame': newGame(); break;
     case 'cgame': goGame(v); break;
     case 'copen': if (S.renaming === v) break; openChat(v); break;
