@@ -1242,7 +1242,7 @@ const chat = () => {
     ${(() => { const sw = S.switched; S.switched = false; return ''; })()}${assets ? assetsThread() : gameThread()}
     ${assets && ac && !hasUser(ac) ? '<p class="draftnote">Not saved until you send the first message</p>' : ''}
     ${assets && ac && S.resumed === ac.id ? (() => { const n = chatItems(ac).length; const th = chatItems(ac)[0];
-      return `<div class="resume" role="dialog" aria-label="Continue this chat?"><div class="rs-top">${th ? `<div class="rs-th">${I(th.img, 28, 28)}</div>` : ''}<div class="rs-tx"><p class="rs-q">Continue in “${esc(ac.name)}”?</p><p class="rs-m">Latest ${ac.cat === '2D & UI' ? '2D' : ac.cat === 'Character' ? 'character' : '3D'} chat · ${n} asset${n === 1 ? '' : 's'} · ${rel(ac.last)}</p></div></div>
+      return `<div class="resume" role="dialog" aria-label="Continue this chat?"><div class="rs-top">${th ? `<div class="rs-th">${I(th.img, 28, 28)}</div>` : ''}<div class="rs-tx"><p class="rs-q">Continue in this chat?</p><p class="rs-m">Latest ${ac.cat === '2D & UI' ? '2D' : ac.cat === 'Character' ? 'character' : '3D'} chat · ${n} asset${n === 1 ? '' : 's'} · ${rel(ac.last)}</p></div></div>
         <div class="rs-acts"><div class="rs-btn ghost" data-act="newchat">Start a new chat</div><div class="rs-btn main" data-act="rkeep">Continue here</div></div></div>`; })() : ''}
     <div class="composer-area">
       <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg',6,6)}</div></div>
