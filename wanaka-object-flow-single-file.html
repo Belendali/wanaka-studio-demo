@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>Wanaka Studio · Plan B</title>
+<title>Wanaka Studio · Object flow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Bitcount+Grid+Single&display=swap">
 <style>
@@ -560,12 +560,149 @@
   .cdlg .t { font: 500 16px/22px var(--font); color: #fff; } .cdlg .b { margin-top: 8px; font: 400 13px/20px var(--font); color: rgba(255,255,255,.6); }
   .cdlg .acts { display: flex; gap: 8px; } .cdlg .acts .btn { flex: 1 0 0; width: auto; }
   .btn.danger { background: #d94242; border: 0; color: #fff; box-shadow: none; } .btn.danger:hover { background: #e24b4b; }
+  /* ======================= OBJECT FLOW (selection → properties → replace) ======================= */
+  .rtabs { position: absolute; left: 1532px; top: 54px; height: 26px; display: flex; gap: 8px; z-index: 12; }
+  .rtabs span { position: relative; padding: 5px 10px; border-radius: 8px; font: 400 13px/16px var(--font); color: rgba(255,255,255,.5); cursor: pointer; }
+  .rtabs span:hover { color: rgba(255,255,255,.8); }
+  .rtabs span.on { background: var(--w08); color: rgba(255,255,255,.95); }
+  .rtabs i.dot { position: absolute; right: 2px; top: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+
+  .objp { position: absolute; left: 1520px; top: 88px; width: 400px; height: 992px; padding: 12px; overflow: hidden; z-index: 8; }
+  .objp .seg2 { display: flex; gap: 14px; padding: 2px 0 10px; }
+  .objp .seg2 span { font: 500 15px/20px var(--font); color: rgba(255,255,255,.4); cursor: pointer; }
+  .objp .seg2 span.on { color: #fff; }
+  .objp .seg3 { display: flex; gap: 8px; margin-bottom: 12px; }
+  .objp .seg3 span { padding: 6px 12px; border-radius: 8px; background: var(--w06); font: 400 13px/16px var(--font); color: rgba(255,255,255,.55); cursor: pointer; }
+  .objp .seg3 span.on { background: var(--w14); color: #fff; }
+  .objp .cards { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .objp .ocard { width: 180px; height: 56px; border-radius: 10px; background: var(--w05); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    font: 400 11px/14px var(--font); color: rgba(255,255,255,.75); cursor: pointer; border: 1px solid transparent; }
+  .objp .ocard.on { background: var(--w08); border-color: var(--w20); color: #fff; }
+  .objp .ocard .ic { width: 16px; height: 16px; opacity: .8; }
+  .objp .sect { margin-top: 12px; font: 400 12px/16px var(--font); color: rgba(255,255,255,.55); }
+  .objp .field { margin-top: 6px; height: 32px; border-radius: 8px; background: var(--w06); display: flex; align-items: center; padding: 0 10px;
+    font: 400 13px/16px var(--font); color: rgba(255,255,255,.92); }
+  .objp .trio { display: flex; gap: 8px; margin-top: 6px; }
+  .objp .trio .f { flex: 1 0 0; height: 32px; border-radius: 8px; background: var(--w06); display: flex; align-items: center; gap: 6px; padding: 0 8px; min-width: 0; }
+  .objp .trio .f b { font: 500 11px/14px var(--font); color: rgba(255,255,255,.4); }
+  .objp .trio .f span { font: 400 12px/15px var(--font); color: rgba(255,255,255,.92); white-space: nowrap; overflow: hidden; }
+  .objp .trio .f span.hot { color: var(--brand); }
+  .objp .rowline { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+  .objp .rowline .lab { font: 400 13px/17px var(--font); color: rgba(255,255,255,.9); }
+  .objp .rowline .val { font: 400 13px/17px var(--font); color: rgba(255,255,255,.55); }
+  .objp .rowline .val.hot { color: var(--brand); }
+  .objp .slider { margin-top: 8px; height: 6px; border-radius: 3px; background: var(--w10, rgba(255,255,255,.1)); position: relative; }
+  .objp .slider i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: rgba(255,255,255,.85); }
+  .objp .slider b { position: absolute; top: -5px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+  .objp .sw { width: 40px; height: 22px; border-radius: 11px; background: rgba(255,255,255,.18); position: relative; cursor: pointer; flex: none; }
+  .objp .sw i { position: absolute; left: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .16s ease; }
+  .objp .sw.on { background: linear-gradient(90deg, #c0f000, #14f000 47%, #00f08c); }
+  .objp .sw.on i { left: 20px; }
+  .objp .sel { margin-top: 6px; height: 32px; border-radius: 8px; background: var(--w06); display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
+    font: 400 13px/16px var(--font); color: rgba(255,255,255,.92); }
+  .objp .sel img { opacity: .5; }
+  .objp .replace { margin-top: 12px; height: 40px; border-radius: 12px; background: #fff; color: #222; display: flex; align-items: center; justify-content: center;
+    font: 500 14px/18px var(--font); cursor: pointer; }
+  .objp .replace:hover { background: rgba(255,255,255,.88); }
+  .objp .replace.off { background: var(--w14); color: rgba(255,255,255,.4); cursor: not-allowed; }
+  .objp .mixed { color: rgba(255,255,255,.4) !important; font-style: italic; }
+
+  .askw { position: absolute; left: 1532px; bottom: 16px; width: 376px; padding: 12px; border-radius: 12px; background: #1e1719; border: 1px solid var(--w10, rgba(255,255,255,.1)); z-index: 9; }
+  .askw .line { display: flex; align-items: center; gap: 8px; }
+  .askw .line input { flex: 1 0 0; background: transparent; border: 0; outline: 0; color: #fff; font: 400 13px/16px var(--font); }
+  .askw .line input::placeholder { color: rgba(255,255,255,.42); }
+  .askw .go { width: 28px; height: 28px; border-radius: 999px; background: var(--w14); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
+  .askw .go:hover { background: var(--w20); }
+  .askw .hints { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .askw .hints span { padding: 4px 8px; border-radius: 999px; background: var(--w06); font: 400 11px/15px var(--font); color: rgba(255,255,255,.6); cursor: pointer; }
+  .askw .hints span:hover { background: var(--w14); color: #fff; }
+
+  /* attachment chips above the composer */
+  .attach { position: absolute; left: 1532px; width: 376px; display: flex; gap: 6px; flex-wrap: wrap; z-index: 9; }
+  .attach .ch { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 9px; background: rgba(255,255,255,.07); border: 1px solid var(--w10, rgba(255,255,255,.1));
+    font: 400 12px/15px var(--font); color: rgba(255,255,255,.92); }
+  .attach .ch img { width: 14px; height: 14px; opacity: .75; }
+  .attach .ch u { text-decoration: none; opacity: .45; cursor: pointer; font-size: 13px; }
+  .attach .ch u:hover { opacity: .9; }
+
+  /* ---- replace modal ---- */
+  .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.6); z-index: 40; }
+  .rmod { position: absolute; left: 600px; top: 120px; width: 720px; border-radius: 16px; background: #141012; border: 1px solid var(--w08);
+    box-shadow: 0 18px 48px rgba(0,0,0,.55); z-index: 41; display: flex; flex-direction: column; overflow: hidden; }
+  .rmod .rhead { height: 56px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+  .rmod .rhead b { font: 500 17px/22px var(--font); }
+  .rmod .rhead .x { width: 28px; height: 28px; border-radius: 8px; background: var(--w08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .rmod .rbody { padding: 0 20px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .rmod .cmp { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 12px; background: var(--w02); }
+  .rmod .cmp .slot { flex: 1 0 0; min-width: 0; }
+  .rmod .cmp .slot p { font: 500 11px/14px var(--font); color: rgba(255,255,255,.5); margin-bottom: 6px; }
+  .rmod .cmp .box { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; background: var(--w05); }
+  .rmod .cmp .box.picked { background: rgba(192,240,0,.1); border: 1.5px solid var(--brand); padding: 6.5px; }
+  .rmod .cmp .box.empty { height: 72px; border: 1.5px dashed rgba(255,255,255,.18); background: rgba(255,255,255,.03); align-items: center; justify-content: center;
+    font: 400 12px/16px var(--font); color: rgba(255,255,255,.42); }
+  .rmod .cmp .th { width: 56px; height: 56px; border-radius: 8px; background: #191718; display: flex; align-items: center; justify-content: center; flex: none; overflow: hidden; }
+  .rmod .cmp .th img { width: 50px; height: 48px; object-fit: contain; }
+  .rmod .cmp .mt { min-width: 0; }
+  .rmod .cmp .mt b { display: block; font: 500 13px/17px var(--font); color: rgba(255,255,255,.95); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rmod .cmp .mt span { font: 400 11px/15px var(--font); color: rgba(255,255,255,.4); }
+  .rmod .cmp .arrow { font-size: 20px; color: rgba(255,255,255,.45); }
+  .rmod .bar { display: flex; align-items: center; gap: 12px; }
+  .rmod .src { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: var(--w06); }
+  .rmod .src span { padding: 7px 14px; border-radius: 8px; font: 500 13px/16px var(--font); color: rgba(255,255,255,.5); cursor: pointer; }
+  .rmod .src span.on { background: var(--w14); color: rgba(255,255,255,.95); }
+  .rmod .search { flex: 1 0 0; height: 32px; border-radius: 8px; background: var(--w06); display: flex; align-items: center; gap: 6px; padding: 0 10px;
+    font: 400 12px/16px var(--font); color: rgba(255,255,255,.4); }
+  .rmod .flt { display: flex; gap: 8px; }
+  .rmod .flt span { padding: 5px 12px; border-radius: 999px; background: var(--w06); font: 500 12px/16px var(--font); color: rgba(255,255,255,.65); cursor: pointer; }
+  .rmod .flt span.on { background: #fff; color: #222; }
+  .rmod .glabel { display: flex; align-items: center; justify-content: space-between; font: 500 12px/16px var(--font); color: rgba(255,255,255,.55); margin-top: 2px; }
+  .rmod .glabel i { font-style: normal; font-weight: 400; font-size: 11px; color: rgba(255,255,255,.35); }
+  .rmod .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .rmod .cell { padding: 8px; border-radius: 10px; background: #191717; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; border: 1.5px solid transparent; position: relative; }
+  .rmod .cell:hover { border-color: var(--w20); }
+  .rmod .cell.on { background: rgba(192,240,0,.1); border-color: var(--brand); }
+  .rmod .cell img { width: 64px; height: 58px; object-fit: contain; }
+  .rmod .cell p { font: 400 10px/13px var(--font); color: rgba(255,255,255,.5); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rmod .cell .kind { position: absolute; right: 6px; top: 6px; padding: 1px 4px; border-radius: 5px; background: var(--brand); color: #222; font: 500 9px/12px var(--font); }
+  .rmod .cell .kind.d2 { background: #7bdcff; }
+  .rmod .rfoot { display: flex; align-items: center; gap: 12px; padding: 14px 20px 18px; }
+  .rmod .rfoot .sp { flex: 1 0 0; }
+  .rmod .btn { padding: 0 18px; height: 38px; border-radius: 10px; background: var(--w10, rgba(255,255,255,.1)); display: flex; align-items: center; justify-content: center;
+    font: 500 13px/16px var(--font); color: rgba(255,255,255,.92); cursor: pointer; }
+  .rmod .btn:hover { background: var(--w20); }
+  .rmod .btn.pri { background: #fff; color: #222; }
+  .rmod .btn.pri:hover { background: rgba(255,255,255,.88); }
+  .rmod .btn.off { opacity: .4; cursor: not-allowed; }
+
+  /* result + failure cards inside the chat */
+  .ocard-res { width: 376px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,.06); }
+  .ocard-res .prev { height: 150px; border-radius: 10px; background: #191717; display: flex; align-items: center; justify-content: center; }
+  .ocard-res .prev img { max-height: 130px; object-fit: contain; }
+  .ocard-res .nm { margin-top: 10px; font: 400 13px/17px var(--font); color: rgba(255,255,255,.9); }
+  .ocard-res .acts { display: flex; gap: 8px; margin-top: 10px; }
+  .ocard-res .acts div { flex: 1 0 0; height: 36px; border-radius: 10px; background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center;
+    font: 500 13px/16px var(--font); color: #fff; cursor: pointer; }
+  .ocard-res .acts div.pri { background: #fff; color: #222; }
+  .ofail { width: 376px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,184,61,.35); }
+  .ofail .h { display: flex; align-items: center; gap: 8px; font: 500 13px/17px var(--font); color: rgba(255,255,255,.95); }
+  .ofail .h em { width: 16px; height: 16px; border-radius: 50%; background: rgba(255,184,61,.25); border: 1px solid #ffb83d; flex: none; }
+  .ofail p { margin-top: 8px; font: 400 12px/17px var(--font); color: rgba(255,255,255,.5); }
+  .ofail .acts { display: flex; gap: 8px; margin-top: 10px; }
+  .ofail .acts div { flex: 1 0 0; height: 36px; border-radius: 10px; background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center;
+    font: 500 13px/16px var(--font); color: #fff; cursor: pointer; }
+  .ofail .acts div.pri { background: #fff; color: #222; }
+  .obusy { width: 376px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,.06); font: 400 13px/17px var(--font); color: rgba(255,255,255,.8); }
+  .obusy .bar { margin-top: 10px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; }
+  .obusy .bar i { display: block; height: 100%; width: 40%; border-radius: 3px; background: rgba(255,255,255,.85); animation: obar 1.4s ease-in-out infinite; }
+  @keyframes obar { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
+  .obj .gzwrap { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; overflow: visible; }
+  .obj .gzwrap svg.gz { position: absolute; left: -190px; top: -175px; overflow: visible; }
 </style>
 
 
-<div class="picker" id="picker"><span class="lbl">Wanaka Studio · Create · chat generation</span>
+<div class="picker" id="picker"><span class="lbl">Wanaka Studio · Object flow · select → properties → replace</span>
   <button type="button" id="reset">Reset demo</button>
-  <a href="object-flow.html" style="font:500 12px/1 var(--font);color:#1a1a1a;background:#c0f000;border:1px solid #c0f000;border-radius:6px;padding:7px 10px;text-decoration:none;margin-left:8px">Object flow ↗</a>
+  <button type="button" id="failTgl" aria-pressed="false">Simulate a failed generation</button>
   <span class="zoom" id="zoom"></span></div>
 
 <div class="stage-wrap"><div class="stage-box" id="box"><div class="stage" id="stage"></div></div></div>
@@ -1500,7 +1637,347 @@ stage.addEventListener('focusout', (e) => { if (e.target.id === 'crename' && S.r
   if (v === 'delete') { S.menu = false; S.confirmDel = 'c-cat'; renderChat(); renderDel(); }
 })();
 
+/* ===================== OBJECT FLOW: select → properties → replace → chat edit ===================== */
+const OF = {
+  rt: 'agent',          // right panel tab: agent | object
+  sel: [],              // selected object ids
+  modal: null,          // { pick, src, filter }
+  thread: [],           // my own chat thread for this demo
+  busy: false,
+  failNext: false,      // make the next generation fail once
+  attempt: 0,
+  draft: '',
+  scaling: 10,
+  scalingHot: false,
+  dot: false,           // unread marker on the Agent tab
+  pendingReplace: false
+};
+const LIB = [
+  { name: 'Puppy model 01', img: 'dog-large.png', kind: '3D' },
+  { name: 'Corgi model 03', img: 'puppy1.png', kind: '3D' },
+  { name: 'Cat model 01', img: 'cat3d-a.png', kind: '3D' },
+  { name: 'Cat student', img: 'cat.png', kind: '3D' },
+  { name: 'Puppy model 02', img: 'puppy2.png', kind: '3D' },
+  { name: 'Puppy model 03', img: 'puppy3.png', kind: '3D' },
+  { name: 'Puppy model 04', img: 'puppy4.png', kind: '3D' },
+  { name: 'Coin icon', img: 'coin.png', kind: '2D' },
+  { name: 'Platform tile', img: 'dog.png', kind: '3D' },
+  { name: 'Mascot', img: 'mascot.png', kind: '3D' },
+  { name: 'Puppy sticker 01', img: 'puppy1.png', kind: '2D' },
+  { name: 'Puppy sticker 02', img: 'puppy2.png', kind: '2D' }
+];
+const SUGGESTED = [1, 2, 4, 5];
+
+function ofSeed() {
+  S.scene = [
+    { id: uid++, name: 'Puppy model 01', img: 'dog-large.png', h: 300, x: 520, y: 700, kind: '3D' },
+    { id: uid++, name: 'Cat model 01', img: 'cat3d-a.png', h: 250, x: 860, y: 740, kind: '3D' }
+  ];
+  S.selected = null; OF.sel = [];
+  OF.thread = []; OF.rt = 'agent'; OF.modal = null; OF.scaling = 10; OF.scalingHot = false;
+}
+const ofObj = (id) => S.scene.find(o => o.id === id);
+const ofSelObjs = () => OF.sel.map(ofObj).filter(Boolean);
+const ofOne = () => ofSelObjs()[0];
+
+/* ---------- canvas: selection gizmo ---------- */
+const ofGizmo = () => `<svg class="gz" width="380" height="350" viewBox="0 0 380 350" fill="none" aria-hidden="true">
+  <g stroke="#3C3C3C" stroke-opacity=".5" stroke-width="1.5">
+    <path d="M190 300 L335 228 L190 156 L45 228 Z"/>
+    <path d="M190 186 L335 114 L190 42 L45 114 Z"/>
+    <path d="M190 300 L190 186 M335 228 L335 114 M190 156 L190 42 M45 228 L45 114"/>
+  </g>
+  <g fill="#8A8A8A" stroke="#fff" stroke-width="1.2">
+    <circle cx="190" cy="300" r="6"/><circle cx="335" cy="228" r="6"/><circle cx="190" cy="156" r="6"/><circle cx="45" cy="228" r="6"/>
+    <circle cx="190" cy="186" r="6"/><circle cx="335" cy="114" r="6"/><circle cx="190" cy="42" r="6"/><circle cx="45" cy="114" r="6"/>
+  </g>
+  <g fill="none" stroke-width="3.5" stroke-opacity=".9">
+    <ellipse cx="190" cy="228" rx="78" ry="30" stroke="#FF5A5A"/>
+    <ellipse cx="190" cy="228" rx="78" ry="30" stroke="#4DA3FF" transform="rotate(62 190 228)"/>
+    <ellipse cx="190" cy="228" rx="78" ry="30" stroke="#FFC43D" transform="rotate(-62 190 228)"/>
+  </g>
+  <g stroke-width="3.5" stroke-linecap="round">
+    <path d="M190 228 L190 118" stroke="#2BD9C0"/><path d="M190 228 L285 275" stroke="#FF5A5A"/><path d="M190 228 L282 185" stroke="#4DA3FF"/>
+  </g>
+  <path d="M190 100 l9 22 l-18 0 Z" fill="#2BD9C0"/><path d="M302 283 l-21 7 l2 -19 Z" fill="#FF5A5A"/><path d="M299 176 l-20 -2 l7 19 Z" fill="#4DA3FF"/>
+  <circle cx="190" cy="228" r="5.5" fill="#fff" stroke="#9A9A9A"/>
+</svg>`;
+
+renderScene = function () {
+  const layer = document.getElementById('scene'); if (!layer) return;
+  layer.innerHTML = S.scene.map(o => {
+    const on = OF.sel.includes(o.id);
+    return `<div class="obj${on ? ' sel' : ''}" data-oid="${o.id}" style="left:${o.x}px;top:${o.y}px;--h:${o.h}px">
+      <div class="shadow"></div><img src="${U(o.img)}" draggable="false" alt="">
+      ${on ? `<div class="gzwrap" style="transform:scale(${(o.h / 300).toFixed(2)})">${ofGizmo()}</div><div class="tag"><b></b>${esc(o.name)}</div>` : ''}
+    </div>`;
+  }).join('') + (OF.sel.length ? `<div class="hint">Shift-click to add · Esc to deselect</div>` : '');
+};
+
+/* ---------- right panel ---------- */
+function ofSelect(id, add) {
+  if (add) { OF.sel = OF.sel.includes(id) ? OF.sel.filter(x => x !== id) : OF.sel.concat(id); }
+  else OF.sel = [id];
+  S.selected = OF.sel[OF.sel.length - 1] || null;
+  if (OF.sel.length) OF.rt = 'object';
+  renderScene(); ofRight();
+}
+function ofDeselect() { OF.sel = []; S.selected = null; OF.rt = 'agent'; renderScene(); ofRight(); }
+
+const ofTabs = () => `<div class="rtabs">
+  <span class="${OF.rt === 'agent' ? 'on' : ''}" data-of="rt" data-v="agent">Agent${OF.dot && OF.rt !== 'agent' ? '<i class="dot"></i>' : ''}</span>
+  <span class="${OF.rt === 'object' ? 'on' : ''}" data-of="rt" data-v="object">Object</span></div>`;
+
+const ofField = (label, value, hot) => `<p class="sect">${label}</p><div class="field"><span class="${hot ? 'hot' : ''}">${esc(value)}</span></div>`;
+const ofTrio = (label, vals, hot) => `<p class="sect">${label}</p><div class="trio">${vals.map(([k, v]) =>
+  `<div class="f"><b>${k}</b><span class="${hot ? 'hot' : ''}">${v}</span></div>`).join('')}</div>`;
+
+function ofObjectPane() {
+  const objs = ofSelObjs(); const many = objs.length > 1; const o = objs[0];
+  if (!o) return `<div class="objp"><p class="sect">Nothing selected · click an object in the scene</p></div>`;
+  const name = many ? 'Mixed' : o.name;
+  const sameKind = objs.every(x => x.kind === objs[0].kind);
+  return `<div class="objp">
+    <div class="seg2"><span class="on">Object</span><span>Instance</span></div>
+    <div class="seg3"><span class="on">Properties</span><span>Behaviors</span></div>
+    <div class="cards">
+      <div class="ocard on">${I('cat-asset.svg', 16, 16, 'class="ic"')}Basic info</div>
+      <div class="ocard">${I('cat-material.svg', 16, 16, 'class="ic"')}Rendering &amp; Shadows</div>
+      <div class="ocard">${I('cat-animation.svg', 16, 16, 'class="ic"')}Animations</div>
+    </div>
+    <div class="replace${many && !sameKind ? ' off' : ''}" data-of="${many && !sameKind ? 'noop' : 'openReplace'}">
+      ${many ? (sameKind ? `Replace all (${objs.length})` : 'Select one type to replace') : 'Replace model'}</div>
+    <p class="sect">Object name</p><div class="field"><span class="${many ? 'mixed' : ''}">${esc(name)}</span></div>
+    ${ofTrio('Default orientation', [['X', 0], ['Y', 180], ['Z', 0]])}
+    ${ofTrio('Default size', many ? [['W', 'Mixed'], ['H', 'Mixed'], ['D', 'Mixed']] : [['W', 178], ['H', 263], ['D', 263]])}
+    <div class="rowline"><span class="lab">Scaling factor</span><span class="val${OF.scalingHot ? ' hot' : ''}">${OF.scaling}</span></div>
+    <div class="slider"><i style="width:${OF.scaling * 8}%"></i><b style="left:calc(${OF.scaling * 8}% - 8px)"></b></div>
+    <div class="rowline"><span class="lab">Fit to scene size</span><div class="sw on"><i></i></div></div>
+    <p class="sect">Origin point</p><div class="sel">Ground center (Y minimum)${I('chevron-down.svg', 16, 16)}</div>
+    <p class="sect">Center point</p><div class="sel">Ground center (Y minimum)${I('chevron-down.svg', 16, 16)}</div>
+  </div>
+  <div class="askw">
+    <div class="line"><input id="askIn" placeholder="Ask Wana to change ${many ? 'these' : 'this model'}…" value="${esc(OF.draft)}">
+      <div class="go" data-of="askSend">↑</div></div>
+    <div class="hints">
+      <span data-of="hint" data-v="smaller">Make it smaller</span>
+      <span data-of="hint" data-v="color">Change the color</span>
+      <span data-of="hint" data-v="anim">Add an animation</span>
+    </div>
+  </div>`;
+}
+
+/* ---------- agent pane (own thread so the flow is self-contained) ---------- */
+function ofThreadHtml() {
+  return OF.thread.map(m => {
+    if (m.role === 'user') return `<div class="user-msg"><div class="bubble">${esc(m.text)}</div></div>`;
+    if (m.role === 'wana') return `<div class="obusy">${esc(m.text)}</div>`;
+    if (m.role === 'busy') return `<div class="obusy">${esc(m.text || 'Generating…')}<div class="bar"><i></i></div></div>`;
+    if (m.role === 'fail') return `<div class="ofail"><div class="h"><em></em>${esc(m.title)}</div><p>${esc(m.body)}</p>
+      <div class="acts"><div data-of="editPrompt">Edit prompt</div><div class="pri" data-of="retry">${m.attempt > 1 ? 'Try again' : 'Try again'}</div></div></div>`;
+    if (m.role === 'result') return `<div class="ocard-res"><div class="prev"><img src="${U(m.img)}" alt=""></div>
+      <p class="nm">${esc(m.name)}</p>
+      <div class="acts"><div data-of="addNew">Add as new</div><div class="pri" data-of="resReplace" data-v="${m.i}">Replace</div></div></div>`;
+    return '';
+  }).join('');
+}
+function ofAgentPane() {
+  const chips = ofSelObjs();
+  return `<div class="chat-head cb" style="top:88px">
+      <div class="chat-name" style="cursor:default"><span class="nmh">Game creating</span>${I('chevron-down.svg', 16, 16)}</div>
+      <div class="chat-plus">${I('plus.svg', 12, 12)}</div></div>
+    <div class="chat-body cb" style="top:148px;height:932px">
+      <div class="thread" style="display:flex;flex-direction:column;align-items:flex-end;gap:14px">${ofThreadHtml()}</div>
+      <div class="composer-area">
+        <div class="model-strip"><div class="model-row">Wanaka 1.0 Lite ${I('green-dot.svg', 6, 6)}</div></div>
+        <div class="composer">
+          <textarea id="ofIn" placeholder="Ask, plan, build anything…">${esc(OF.draft)}</textarea>
+          <div class="ctl">
+            <div class="lft"><div class="cbtn">${I('btn-circle.svg', 32, 32, 'class="base"')}${I('plus-line.svg', 16, 16, 'class="plus"')}</div>
+              <div class="cbtn">${I('add-file-2.svg', 32, 32, 'class="base"')}</div></div>
+            <div class="cbtn send" data-of="send">${I('send-circle.svg', 32, 32, 'class="base"')}${I('send-arrow.svg', 13.3, 10.7, 'class="arrow"')}</div>
+          </div>
+        </div>
+        <div class="mascot">${I('mascot.png', 57, 60.8)}</div>
+      </div>
+    </div>
+    ${chips.length ? `<div class="attach" style="bottom:214px">${chips.map(c =>
+      `<div class="ch">${I('cat-asset.svg', 14, 14)}${esc(c.name)}<u data-of="unattach" data-v="${c.id}">×</u></div>`).join('')}</div>` : ''}`;
+}
+
+/* ---------- replace modal ---------- */
+function ofModal() {
+  const m = OF.modal; if (!m) return '';
+  const objs = ofSelObjs(); const o = objs[0];
+  const list = LIB.filter(a => m.filter === 'All' || (m.filter === '3D' ? a.kind === '3D' : m.filter === '2D & UI' ? a.kind === '2D' : true));
+  const pick = m.pick != null ? LIB[m.pick] : null;
+  const cell = (i) => { const a = LIB[i]; if (!a) return '';
+    return `<div class="cell${m.pick === i ? ' on' : ''}" data-of="pick" data-v="${i}">
+      <span class="kind${a.kind === '2D' ? ' d2' : ''}">${a.kind}</span>
+      <img src="${U(a.img)}" alt=""><p>${esc(a.name)}</p></div>`; };
+  const all = LIB.map((a, i) => i).filter(i => list.includes(LIB[i]) && !SUGGESTED.includes(i));
+  return `<div class="scrim" data-of="closeModal"></div>
+  <div class="rmod">
+    <div class="rhead"><b>Replace model</b><div class="x" data-of="closeModal">×</div></div>
+    <div class="rbody">
+      <div class="cmp">
+        <div class="slot"><p>Now</p><div class="box"><div class="th"><img src="${U(o.img)}" alt=""></div>
+          <div class="mt"><b>${esc(objs.length > 1 ? objs.length + ' objects' : o.name)}</b><span>3D model · in the scene now</span></div></div></div>
+        <div class="arrow">→</div>
+        <div class="slot"><p>Replace with</p>${pick
+          ? `<div class="box picked"><div class="th"><img src="${U(pick.img)}" alt=""></div>
+              <div class="mt"><b>${esc(pick.name)}</b><span>Position and rotation stay the same</span></div></div>`
+          : `<div class="box empty">Pick one below</div>`}</div>
+      </div>
+      <div class="bar">
+        <div class="src"><span class="${m.src === 'mine' ? 'on' : ''}" data-of="src" data-v="mine">My assets</span>
+          <span class="${m.src === 'lib' ? 'on' : ''}" data-of="src" data-v="lib">Wanaka library</span></div>
+        <div class="search">${I('search.svg', 12, 12)}Search objects</div>
+      </div>
+      <div class="flt">${['All', '3D', '2D & UI', 'Character'].map(f =>
+        `<span class="${m.filter === f ? 'on' : ''}" data-of="filter" data-v="${esc(f)}">${f}</span>`).join('')}</div>
+      <div class="glabel">Suggested <i>similar size and style to the current model</i></div>
+      <div class="grid">${SUGGESTED.map(cell).join('')}</div>
+      <div class="glabel">All assets</div>
+      <div class="grid">${all.slice(0, 8).map(cell).join('')}</div>
+    </div>
+    <div class="rfoot">
+      <div class="btn" data-of="genNew">Generate a new one</div><div class="sp"></div>
+      <div class="btn" data-of="closeModal">Cancel</div>
+      <div class="btn pri${pick ? '' : ' off'}" data-of="doReplace">${objs.length > 1 ? 'Replace all (' + objs.length + ')' : 'Replace'}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- compose the right side ---------- */
+function ofRight() {
+  stage.querySelectorAll('#chatroot, .rtabs, .objp, .askw, .attach, .scrim, .rmod, .ofwrap').forEach(n => n.remove());
+  const wrap = document.createElement('div'); wrap.className = 'ofwrap';
+  wrap.innerHTML = ofTabs() + (OF.rt === 'object' ? ofObjectPane() : ofAgentPane()) + ofModal();
+  stage.appendChild(wrap);
+  const th = wrap.querySelector('.thread'); if (th) th.scrollTop = th.scrollHeight;
+}
+renderShell = function () {
+  stage.innerHTML = topbar() + rail() + panel() + viewport();
+  renderScene(); ofRight();
+};
+
+/* ---------- actions ---------- */
+function ofSwap(asset) {
+  const objs = ofSelObjs(); if (!objs.length) return;
+  const before = objs.map(o => ({ id: o.id, name: o.name, img: o.img }));
+  objs.forEach(o => { o.name = asset.name; o.img = asset.img; });
+  renderScene(); ofRight();
+  toast(`Replaced with “${asset.name}”`, () => {
+    before.forEach(b => { const o = ofObj(b.id); if (o) { o.name = b.name; o.img = b.img; } });
+    renderScene(); ofRight();
+  });
+}
+function ofSend(text) {
+  if (!text.trim()) return;
+  OF.draft = '';
+  OF.thread.push({ role: 'user', text });
+  OF.thread.push({ role: 'busy', text: 'Generating a replacement…' });
+  OF.busy = true; OF.rt = 'agent'; ofRight();
+  setTimeout(() => {
+    OF.thread = OF.thread.filter(m => m.role !== 'busy');
+    if (OF.failNext && OF.attempt === 0) {
+      OF.attempt = 1;
+      OF.thread.push({ role: 'fail', attempt: 1, title: 'Couldn’t generate this model', body: 'Something went wrong on our side. Your prompt is saved — nothing in the scene changed.' });
+    } else {
+      OF.attempt = 0;
+      OF.thread.push({ role: 'result', i: 1, name: 'Corgi model_3D.glb', img: LIB[1].img });
+    }
+    OF.busy = false; ofRight();
+  }, 1700);
+}
+function ofAsk(kind) {
+  const o = ofOne(); if (!o) return;
+  const text = kind === 'smaller' ? 'Make it 20% smaller' : kind === 'color' ? 'Make it a warmer color' : 'Add an idle animation';
+  OF.rt = 'agent';
+  OF.thread.push({ role: 'user', text });
+  OF.thread.push({ role: 'busy', text: 'Working on it…' });
+  ofRight();
+  setTimeout(() => {
+    OF.thread = OF.thread.filter(m => m.role !== 'busy');
+    if (kind === 'smaller') {
+      const prev = { scaling: OF.scaling, h: o.h };
+      OF.scaling = 8; OF.scalingHot = true; o.h = Math.round(o.h * 0.8);
+      OF.thread.push({ role: 'wana', text: `Done — scaling factor ${prev.scaling} → 8 on ${o.name}.` });
+      renderScene(); ofRight();
+      toast('Wana made it 20% smaller', () => {
+        OF.scaling = prev.scaling; OF.scalingHot = false; o.h = prev.h; renderScene(); ofRight();
+      });
+    } else {
+      OF.thread.push({ role: 'wana', text: kind === 'color' ? 'Done — warmer tint applied. Open Rendering & Shadows to fine-tune.' : 'Done — idle animation added. Open Animations to swap it.' });
+      ofRight();
+    }
+  }, 1100);
+}
+stage.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-of]'); if (!t) return;
+  const act = t.dataset.of, v = t.dataset.v;
+  e.stopPropagation();
+  switch (act) {
+    case 'rt': OF.rt = v; if (v === 'agent') OF.dot = false; ofRight(); break;
+    case 'openReplace': OF.modal = { pick: null, src: 'mine', filter: '3D' }; ofRight(); break;
+    case 'closeModal': OF.modal = null; ofRight(); break;
+    case 'src': OF.modal.src = v; ofRight(); break;
+    case 'filter': OF.modal.filter = v; ofRight(); break;
+    case 'pick': OF.modal.pick = +v; ofRight(); break;
+    case 'doReplace': { const p = OF.modal.pick; if (p == null) break; OF.modal = null; ofSwap(LIB[p]); break; }
+    case 'genNew': OF.modal = null; OF.rt = 'agent'; OF.pendingReplace = true; ofRight();
+      setTimeout(() => { const ta = document.getElementById('ofIn'); if (ta) { ta.value = 'A chubby corgi puppy, same cartoon style'; ta.focus(); } }, 30); break;
+    case 'send': { const ta = document.getElementById('ofIn'); ofSend(ta ? ta.value : ''); break; }
+    case 'askSend': { const inp = document.getElementById('askIn'); const val = inp ? inp.value : ''; if (val.trim()) { ofSend(val); } break; }
+    case 'hint': ofAsk(v); break;
+    case 'retry': OF.thread = OF.thread.filter(m => m.role !== 'fail');
+      OF.thread.push({ role: 'busy', text: 'Trying again · attempt 2' }); ofRight();
+      setTimeout(() => { OF.thread = OF.thread.filter(m => m.role !== 'busy'); OF.attempt = 0;
+        OF.thread.push({ role: 'result', i: 1, name: 'Corgi model_3D.glb', img: LIB[1].img }); ofRight(); }, 1500); break;
+    case 'editPrompt': OF.thread = OF.thread.filter(m => m.role !== 'fail'); ofRight();
+      setTimeout(() => { const ta = document.getElementById('ofIn'); if (ta) { ta.value = 'A chubby corgi puppy, same cartoon style'; ta.focus(); } }, 30); break;
+    case 'resReplace': ofSwap(LIB[+v]); break;
+    case 'addNew': { const a = LIB[1]; const n = S.scene.length;
+      S.scene.push({ id: uid++, name: a.name, img: a.img, h: 260, x: 1000 + n * 20, y: 760, kind: '3D' });
+      renderScene(); toast(`Added “${a.name}” to the scene`); break; }
+    case 'unattach': OF.sel = OF.sel.filter(x => x !== +v); S.selected = OF.sel[OF.sel.length - 1] || null; renderScene(); ofRight(); break;
+    default: break;
+  }
+});
+stage.addEventListener('pointerdown', (e) => {
+  const obj = e.target.closest('.obj');
+  if (obj) { ofSelect(+obj.dataset.oid, e.shiftKey); return; }
+  if (e.target.closest('#viewport') && !e.target.closest('.rmod') && OF.sel.length) ofDeselect();
+}, true);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { if (OF.modal) { OF.modal = null; ofRight(); } else if (OF.sel.length) ofDeselect(); }
+});
+
+ofSeed();
 renderShell(); fit();
+(function () {
+  const b = document.getElementById('failTgl');
+  b.addEventListener('click', () => { OF.failNext = !OF.failNext; OF.attempt = 0; b.setAttribute('aria-pressed', OF.failNext ? 'true' : 'false'); });
+})();
+
+/* ---- review hooks: ?of=select|replace|picked|gen|fail|retry|edit|multi ---- */
+(function () {
+  const v = new URLSearchParams(location.search).get('of'); if (!v) return;
+  const ids = S.scene.map(o => o.id);
+  if (v === 'multi') { OF.sel = ids.slice(0, 2); S.selected = ids[1]; OF.rt = 'object'; }
+  else { OF.sel = [ids[0]]; S.selected = ids[0]; OF.rt = 'object'; }
+  if (v === 'replace') OF.modal = { pick: null, src: 'mine', filter: '3D' };
+  if (v === 'picked') OF.modal = { pick: 1, src: 'mine', filter: '3D' };
+  if (v === 'gen' || v === 'fail' || v === 'retry' || v === 'edit') OF.rt = 'agent';
+  if (v === 'gen') OF.thread = [{ role: 'user', text: 'A chubby corgi puppy, same cartoon style' }, { role: 'result', i: 1, name: 'Corgi model_3D.glb', img: LIB[1].img }];
+  if (v === 'fail') OF.thread = [{ role: 'user', text: 'A chubby corgi puppy, same cartoon style' },
+    { role: 'fail', attempt: 1, title: 'Couldn’t generate this model', body: 'Something went wrong on our side. Your prompt is saved — nothing in the scene changed.' }];
+  if (v === 'retry') OF.thread = [{ role: 'user', text: 'A chubby corgi puppy, same cartoon style' }, { role: 'busy', text: 'Trying again · attempt 2' }];
+  if (v === 'edit') { OF.thread = [{ role: 'user', text: 'Make it 20% smaller' }, { role: 'wana', text: 'Done — scaling factor 10 → 8 on Puppy model 01.' }]; OF.scaling = 8; OF.scalingHot = true; }
+  renderScene(); ofRight();
+})();
+
 // URL hooks for sharing a state: ?cat=3D%20Model&demo=I%20want%20a%20cute%20dog
 (() => { const q = new URLSearchParams(location.search);
   if (q.get('cat') && KINDS[q.get('cat')]) { S.cat = q.get('cat'); renderPanel(); }

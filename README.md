@@ -35,6 +35,23 @@
 3. 点开 → **动作弹窗**：左侧动作列表（纯文字标签），中间实时预览；**Show Rig 默认关闭**，无网格背景。
 4. 弹窗内 **Edit Rig** → Orient Model 对话框（调整朝向）；另有 **Download**、**Add to scene**。
 
+
+## 物体流程 · Object flow（新）
+
+`object-flow.html` —— 点击画布里的模型 → 右边展开属性 → 替换模型 / 让 Wana 改。对应 Figma 分区 1004 / 1006。
+
+- **选中**：点画布里的物体，右边自动切到 **Object**；3D 包围盒 + gizmo；Shift 点击可多选，Esc 取消
+- **属性**：Object name / Default orientation / Default size / Scaling factor / Fit to scene size / Origin point / Center point；多选时不一致的值显示 `Mixed`
+- **Replace model** → 弹窗：顶部 **Now → Replace with** 对照，My assets / Wanaka library，类别筛选，**Suggested** 和 **All assets** 两组；选中后 Replace，位置和旋转不变，toast 可撤销
+- **Generate a new one**（弹窗左下）→ 关闭弹窗，右边切到 Agent，物体作为附件 chip 挂在输入框上，prompt 已填好
+- **生成结果卡片**：主按钮 **Replace**（换掉选中的那个），次按钮 **Add as new**
+- **失败重试**：顶部 `Simulate a failed generation` 打开后再发送 → 失败卡片（Try again / Edit prompt）→ 重试显示 attempt 2 → 成功
+- **Chat edit**：Object 面板底部常驻 `Ask Wana to change this model…` 和三个快捷 chip；点一下翻到 Agent，改完属性面板里的数值变成高亮色，toast 可撤销
+
+Live: https://belendali.github.io/wanaka-studio-demo/object-flow.html
+
+状态直达：`object-flow.html?of=select|replace|picked|gen|fail|retry|edit|multi`
+
 ## 3. 对话管理规则
 
 ### 3.1 Generate now = 默认复用
@@ -119,6 +136,8 @@ Message   = { role: 'user' | 'thinking' | 'result' | 'gallery' | 'concept' | 'ri
 | `wanaka-create-single-file.html` | 同上，图片全部内联，可以离线打开或直接发给别人 |
 | `assets/` | 从 Figma 导出的图标和图片 |
 | `tools/build-single.py` | 生成单文件版：`python3 tools/build-single.py index.html wanaka-create-single-file.html` |
+| `object-flow.html` | 物体流程 demo（选中 → 属性 → 替换 → 对话里改） |
+| `wanaka-object-flow-single-file.html` | 物体流程的离线单文件版 |
 | `plan-b.html` | 旧链接，自动跳转到 `index.html` |
 | `archive/` | 已放弃的方案（Plan A 表单式、Plan C 每类一个对话），仅存档，页面上没有入口 |
 
