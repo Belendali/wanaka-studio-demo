@@ -1717,7 +1717,7 @@ function ofDeselect() { OF.sel = []; S.selected = null; OF.rt = 'agent'; renderS
 
 /* ---------- right panel ---------- */
 const ofTabs = () => {
-  const multi = OF.sel.length > 1;
+  const multi = OF.sel.length !== 1;
   return `<div class="rtabs">
     <span class="${OF.rt === 'agent' ? 'on' : ''}" data-of="rt" data-v="agent">Agent</span>
     <span class="${OF.rt === 'object' ? 'on' : ''}${multi ? ' dis' : ''}" data-of="${multi ? 'noop' : 'rt'}" data-v="object">Object</span>
